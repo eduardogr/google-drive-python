@@ -1,4 +1,4 @@
-from googledrive.google_drive import googledrive
+from googledrive.cli import googledrive
 
 if __name__ == '__main__':
     googledrive()

@@ -1,0 +1,11 @@
+# CHANGELOG
+
+## 0.1.1
+
+- api.GoogleAuth class now receives an argument to specify api-token scopes
+
+## 0.1.0
+
+- api.GoogleAuth
+- api.GoogleDrive
+- api.SheetsService

@@ -4,6 +4,18 @@ import argparse
 from googledrive.api import GoogleAuth
 from googledrive.api import GoogleDrive
 
+# If modifying these scopes, delete the file token.pickle.
+SCOPES = [
+    # drive: Full, permissive scope to access all of a user's files,
+    #        excluding the Application Data folder.
+    'https://www.googleapis.com/auth/drive',
+    # docs: Per-file access to files that the app created or opened.
+    'https://www.googleapis.com/auth/drive.file',
+    # sheets:
+    # Allows read-only access to the user's sheets and their properties.
+    'https://www.googleapis.com/auth/spreadsheets.readonly',
+]
+
 def help():
     return '''
 Usage: google-drive [OPTIONS] COMMAND
@@ -29,7 +41,9 @@ def googledrive(args=sys.argv):
 
     if 'login' == command:
         credentials = args[0]
-        GoogleAuth().authenticate(credentials)
+        GoogleAuth().authenticate(
+            credentials=credentials,
+            scopes=SCOPES)
 
     elif 'ls' == command:
         credentials = args[0]

@@ -10,19 +10,8 @@ from google.auth.transport.requests import Request
 from googledrive.mappers import GoogleFileDictToGoogleFile
 
 class GoogleAuth:
-    # If modifying these scopes, delete the file token.pickle.
-    SCOPES = [
-        # drive: Full, permissive scope to access all of a user's files,
-        #        excluding the Application Data folder.
-        'https://www.googleapis.com/auth/drive',
-        # docs: Per-file access to files that the app created or opened.
-        'https://www.googleapis.com/auth/drive.file',
-        # sheets:
-        # Allows read-only access to the user's sheets and their properties.
-        'https://www.googleapis.com/auth/spreadsheets.readonly',
-    ]
 
-    def authenticate(self, credentials):
+    def authenticate(self, credentials, scopes):
         """
         Obtaining auth with needed apis
         """
@@ -106,7 +95,7 @@ class GoogleDrive(GoogleService):
             body=file_metadata,
             fields='id, name, parents').execute()
 
-        return folder
+        return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(folder)
 
     def update_file_parent(self, file_id, current_parent, new_parent):
         drive_service = super().get_service(
