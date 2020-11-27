@@ -9,28 +9,27 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-with pathlib.Path('requirements/prod.txt').open() as requirements_txt:
-    requirements = [
-        str(requirement)
-        for requirement
-        in pkg_resources.parse_requirements(requirements_txt)
-    ]
+def read_requirements(path):
+    with pathlib.Path(path).open() as requirements_txt:
+        return [
+            str(requirement)
+            for requirement
+            in pkg_resources.parse_requirements(requirements_txt)
+        ]
 
-with pathlib.Path('requirements/dev.txt').open() as requirements_txt:
-    extra_requirements_dev = [
-        str(requirement)
-        for requirement
-        in pkg_resources.parse_requirements(requirements_txt)
-    ]
+
+requirements = read_requirements('requirements/prod.txt')
+extra_requirements_dev = read_requirements('requirements/dev.txt')
+
 
 setup(
     name="google-drive",
-    version="0.1.0",
+    version="0.1.1",
     author="Eduardo Garcia",
     author_email="garciaruiz.edu+google-drive-python@gmail.com",
     maintainer="Eduardo García",
     maintainer_email="garciaruiz.edu+google-drive-python@gmail.com",
-    description=("Manage and interact with your Google Drive"),
+    description=("Library and cli to manage and interact with your Google Drive"),
     license="Apache",
     keywords="google drive",
     url="https://github.com/eduardogr/google-drive-python",
@@ -45,4 +44,7 @@ setup(
         "Topic :: Software Development :: Libraries",
         "License :: OSI Approved :: Apache Software License",
     ],
+    entry_points={
+        'console_scripts': ['google-drive = googledrive.cli:googledrive'],
+    },
 )

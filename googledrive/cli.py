@@ -73,7 +73,3 @@ def googledrive(args=sys.argv):
 
     else:
         print(f"Command {command} not expected.")
-
-
-if __name__ == '__main__':
-    googledrive()

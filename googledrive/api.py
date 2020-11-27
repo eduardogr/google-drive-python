@@ -7,7 +7,10 @@ from googleapiclient.errors import HttpError
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
+from googledrive.models import GoogleApiClientHttpError
 from googledrive.mappers import GoogleFileDictToGoogleFile
+from googledrive.exceptions import MissingGoogleDriveFolderException
+from googledrive.exceptions import MissingGoogleDriveFileException
 
 class GoogleAuth:
 
@@ -168,7 +171,7 @@ class GoogleDrive(GoogleService):
     # TODO: thinking about a speed up for this, it's very slow
     #
     def googledrive_ls(self, path: str):
-        path = list(filter(lambda x: x != '', path.split('/')))
+        path = list(self.__split_path(path))
 
         if len(path) == 0:
             query = f"{GoogleDrive.QUERY_IS_FILE}"
@@ -192,7 +195,7 @@ class GoogleDrive(GoogleService):
         return self.__get_files(query)
 
     def googledrive_get_file(self, path: str):
-        path = list(filter(lambda x: x != '', path.split('/')))
+        path = list(self.__split_path(path))
 
         if len(path) == 0:
             return None
@@ -218,6 +221,9 @@ class GoogleDrive(GoogleService):
 
     def create_file(self):
         pass
+
+    def __split_path(self, path):
+        return filter(lambda x: x != '', path.split('/'))
 
     def __get_file(self, query: str, filename):
         files = self.__get_files(query)
@@ -409,11 +415,9 @@ class FilesAPI(GoogleDrive, SheetsService, DocsService):
 
         return values
 
-    def empty_document(self, document_id):
+    def empty_document(self, document_id, insert_index, end_index):
         document = super().get_document(document_id)
         content = document.get('body').get('content')
-        insert_index = self.__get_indext_after_firt_horizontal_rule(content)
-        end_index = self.__get_last_end_index(content)
 
         # Empty file
         if end_index in range(0, 2) or \
@@ -431,4 +435,4 @@ class FilesAPI(GoogleDrive, SheetsService, DocsService):
                 }
             }
         ]
-        super().batch_update(document_id=document_id, requests=requests)    
+        super().batch_update(document_id=document_id, requests=requests)
