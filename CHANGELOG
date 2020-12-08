@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.1.2
+
+- fixing api.GoogleService.__get_credentials function, adding scopes argument to its __init__ funciton
+
 ## 0.1.1
 
 - api.GoogleAuth class now receives an argument to specify api-token scopes

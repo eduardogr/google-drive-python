@@ -20,19 +20,19 @@ class DocServiceSut(DocsService, MockGoogleService):
     'Inject a mock into the DocsService dependency'
 
     def __init__(self):
-        super().__init__('')
+        super().__init__('', [])
 
 class SheetsServiceSut(SheetsService, MockGoogleService):
     'Inject a mock into the SheetsService dependency'
 
     def __init__(self):
-        super().__init__('')
+        super().__init__('', [])
 
 class GoogleDriveSut(GoogleDrive, MockGoogleService):
     'Inject a mock into the GoogleDrive dependency'
 
     def __init__(self):
-        super().__init__('')
+        super().__init__('', [])
 
 class FilesAPISut(
         FilesAPI,

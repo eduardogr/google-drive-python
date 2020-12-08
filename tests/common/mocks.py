@@ -15,10 +15,11 @@ class MockGoogleService(GoogleService):
 
     __services_by_id = {}
 
-    def __init__(self, credentials_file):
+    def __init__(self, credentials_file, scopes):
         self.__credentials_file = credentials_file
+        self.__scopes = scopes
 
-        super().__init__(credentials_file)
+        super().__init__(credentials_file, scopes)
 
     def get_service(self, service_id, service_version):
         return self.__services_by_id[service_id][service_version]

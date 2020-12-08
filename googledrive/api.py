@@ -44,8 +44,9 @@ class GoogleService:
     __services_by_id = {}
     __credentials = None
 
-    def __init__(self, credentials_file):
+    def __init__(self, credentials_file, scopes):
         self.__credentials_file = credentials_file
+        self.__scopes = scopes
 
     def get_service(self, service_id, service_version):
         if not service_id in self.__services_by_id:
@@ -66,7 +67,9 @@ class GoogleService:
 
     def __get_credentials(self):
         if self.__credentials is None:
-            self.__credentials = GoogleAuth().authenticate(self.__credentials_file)
+            self.__credentials = GoogleAuth().authenticate(
+                self.__credentials_file,
+                self.__scopes)
         return self.__credentials
 
 class GoogleDrive(GoogleService):
