@@ -67,11 +67,9 @@ To generate this we have the make target google-auth, so, you just have to tun
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 Contributions are welcome! Please see our [Contributing Guide](<CONTRIBUTING.md>) for more
-details.
+details. 
 
-## TODO
-
-[TODO](TODO.md)
+You can visit our [TODO](TODO.md) list :)
 
 ## :page_with_curl: License
 
