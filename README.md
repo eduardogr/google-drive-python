@@ -13,8 +13,8 @@ Library and cli to manage and interact with your Google Drive, sheets and docs
 0. [License](#page_with_curl-license)
 
 # Introduction 
-[![Build Status](https://travis-ci.org/eduardogr/evalytics.svg?branch=master)](https://travis-ci.org/eduardogr/evalytics)
-[![codecov](https://codecov.io/gh/eduardogr/evalytics/branch/master/graph/badge.svg)](https://codecov.io/gh/eduardogr/evalytics)
+[![Build Status](https://travis-ci.org/eduardogr/google-drive-python.svg?branch=main)](https://travis-ci.org/github/eduardogr/google-drive-python)
+[![codecov](https://codecov.io/gh/eduardogr/google-drive-python/branch/main/graph/badge.svg?token=E183Y3LLXX)](https://codecov.io/gh/eduardogr/google-drive-python)
 [![Python](https://img.shields.io/badge/Python-v3.6%2B-blue)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/eduardogr/google-drive-python/blob/main/CONTRIBUTING)
 [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/eduardogr/google-drive-python/blob/main/LICENSE)  
