@@ -68,7 +68,7 @@ To generate this we have the make target google-auth, so, you just have to tun
 
 - [ ] Add documentation
 - [ ] Add pull requests and issues templates
-- [ ] Add CONTRIBUTING
+- [X] Add CONTRIBUTING
 
 ## :page_with_curl: License
 
