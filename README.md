@@ -64,6 +64,11 @@ To generate this we have the make target google-auth, so, you just have to tun
 
 ## :family: Contributing
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/eduardogr/google-drive-python/blob/main/CONTRIBUTING)
+
+Contributions are welcome! Please see our [Contributing Guide](<https://github.com/eduardogr/google-drive-python/blob/main/CONTRIBUTING>) for more
+details.
+
 ## TODO
 
 - [ ] Add documentation
