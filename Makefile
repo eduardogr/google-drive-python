@@ -10,3 +10,6 @@ test:
 
 init-virtual-env:
 	./init-virtual-env.sh
+
+google-auth:
+	python3 google_auth.py
