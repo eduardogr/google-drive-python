@@ -47,7 +47,7 @@ Just place them in a `credentials.json` file in the root of this repository. :he
 
 #### Enable Google APIs :books:
 
-You can see where you have to access for each google api in the doc [google apis usage](doc/google-apis/usage.md)
+You can see where you have to access for each google api in the doc [google apis usage](./google-apis-usage.md)
 
 #### Generating your token.pickle :unlock:
 

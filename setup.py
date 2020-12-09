@@ -38,7 +38,7 @@ setup(
     extras_require={
         'dev': extra_requirements_dev
     },
-    long_description=read('README.md'),
+    long_description=read('README'),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Topic :: Software Development :: Libraries",
