@@ -3,7 +3,7 @@ install:
 	pip3 install .
 
 install-dev:
-	pip3 install 'nornirnetwork[dev]'
+	pip3 install '.[dev]'
 
 test:
 	pytest $(ARGS)
