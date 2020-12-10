@@ -223,7 +223,8 @@ class GoogleDrive(GoogleService):
         query = f"{GoogleDrive.QUERY_IS_FILE} and '{folder.id}' in parents" 
         return self.__get_file(query, filename)
 
-    def create_file(self):
+    # TODO: this will be called for the touch command
+    def create_file(self, path, mimetype):
         pass
 
     def __split_path(self, path):
@@ -286,9 +287,10 @@ class SheetsService(GoogleService):
         return spreadsheet
 
     # TODO:
-    # file = google_drive.open(spreadheet_id, "r")
-    # values = file.readlines(assignments_peers_range): // podría no especificarse el rango y leer hasta que ... X
+    # file = sheets_service.open_file(spreadheet_id)
+    # values = file.readlines(rows_range)
     # for row in values:
+    #   print(row)
     #
     def get_file_values(self, spreadsheet_id, rows_range):
         if spreadsheet_id is None:
@@ -352,7 +354,7 @@ class SheetsService(GoogleService):
     # High level API access
     #
 
-    def open_file(self):
+    def open_file(self, spreadheet_id):
         pass
 
 class DocsService(GoogleService):
