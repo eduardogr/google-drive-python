@@ -402,7 +402,7 @@ class TestFilesAPI(TestCase):
         # given:
         folder_parent = 'parent'
         filename = 'filename'
-        folder = GoogleFile(id='new_parent_id', name='folder', parents=[])
+        folder = GoogleFile(id='new_parent_id', name='folder', parents=[], mime_type='', export_links={})
 
         # when:
         self.sut.create_sheet(folder_parent, folder, filename)
@@ -453,7 +453,7 @@ class TestFilesAPI(TestCase):
         folder_name = 'my_folder'
         self.sut.set_pages_requested(1)
         self.sut.set_response_files([
-            GoogleFile(id='some id', name=folder_name, parents=[])
+            GoogleFile(id='some id', name=folder_name, parents=[], mime_type='', export_links={})
         ])
 
         # when:
@@ -490,7 +490,7 @@ class TestFilesAPI(TestCase):
         file_id = 'file_id'
         self.sut.set_googledrive_get_file_response(
             f"/{foldername}/{filename}",
-            GoogleFile(id=file_id, name=filename, parents=[]))
+            GoogleFile(id=file_id, name=filename, parents=[], mime_type='', export_links={}))
         rows_range = 'A2::F4'
 
         # when:

@@ -13,7 +13,12 @@ class TestGoogleFileDictToGoogleFile(TestCase):
             'id': 'name',
             'parents': '[]'
         }
-        expected_google_file = GoogleFile(id='id', name='name', parents=[])
+        expected_google_file = GoogleFile(
+            id='id',
+            name='name',
+            parents=[],
+            mime_type='',
+            export_links={})
         sut = GoogleFileDictToGoogleFile()
 
         # when:
