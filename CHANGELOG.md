@@ -1,6 +1,8 @@
 # CHANGELOG
 
-## Pending: minor version
+## Pending
+
+## 0.2.0
 
 - Now credentials is the last arugment expected
   - e.g.: google-drive ls <path> <credentials-file>
