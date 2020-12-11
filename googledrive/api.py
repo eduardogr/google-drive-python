@@ -8,6 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 from googledrive.models import GoogleApiClientHttpError
+from googledrive.models import GoogleApiClientHttpErrorBuilder
 from googledrive.mappers import GoogleFileDictToGoogleFile
 from googledrive.exceptions import MissingGoogleDriveFolderException
 from googledrive.exceptions import MissingGoogleDriveFileException
@@ -84,6 +85,9 @@ class GoogleDrive(GoogleService):
     MIMETYPE_DOCUMENT = 'application/vnd.google-apps.document'
     MIMETYPE_SPREADSHEET = 'application/vnd.google-apps.spreadsheet'
 
+    FIELDS_BASIC_FILE_METADATA = 'id, name, parents, mimeType'
+    FIELDS_FILE_METADATA = f'{FIELDS_BASIC_FILE_METADATA}, exportLinks'
+
     QUERY_IS_FOLDER = f"mimeType='{MIMETYPE_FOLDER}'"
     QUERY_IS_DOCUMENT = f"mimeType='{MIMETYPE_DOCUMENT}'"
     QUERY_IS_SPREADSHEET = f"mimeType='{MIMETYPE_SPREADSHEET}'"
@@ -100,7 +104,7 @@ class GoogleDrive(GoogleService):
         )
         folder = drive_service.files().create(
             body=file_metadata,
-            fields='id, name, parents').execute()
+            fields=self.FIELDS_BASIC_FILE_METADATA).execute()
 
         return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(folder)
 
@@ -115,6 +119,21 @@ class GoogleDrive(GoogleService):
             removeParents=current_parent)
         file_update.execute()
 
+    def get_file_from_id(self, file_id: str):
+        drive_service = super().get_service(
+            self.DRIVE_SERVICE_ID,
+            self.DRIVE_SERVICE_VERSION
+        )
+        try:
+            google_file_dict = drive_service.files().get(
+                fileId=file_id,
+                fields=self.FIELDS_FILE_METADATA).execute()
+
+            return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(google_file_dict)
+        except HttpError as e:
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise GoogleApiClientHttpErrorException(http_error)
+
     def list_files(self, page_token: str, query: str):
         drive_service = super().get_service(
             self.DRIVE_SERVICE_ID,
@@ -125,7 +144,7 @@ class GoogleDrive(GoogleService):
             pageSize=100,
             spaces='drive',
             corpora='user',
-            fields='nextPageToken, files(id, name, parents)',
+            fields=f'nextPageToken, files({self.FIELDS_BASIC_FILE_METADATA})',
             pageToken=page_token).execute()
 
         google_files = [
@@ -144,7 +163,7 @@ class GoogleDrive(GoogleService):
             fileId=file_id,
             body={
                 'name': new_filename,
-                'mimeType': GoogleDrive.MIMETYPE_DOCUMENT
+                'mimeType': self.MIMETYPE_DOCUMENT
             }
         ).execute()
         return results.get('id')
@@ -254,14 +273,7 @@ class GoogleDrive(GoogleService):
                     page_token = next_page_token
             return None
         except HttpError as e:
-            error_reason = json.loads(e.content)
-            error = error_reason['error']
-            http_error = GoogleApiClientHttpError(
-                error['code'],
-                error['message'],
-                error['status'],
-                error['details'] if 'details' in error else []
-            )
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
             raise GoogleApiClientHttpErrorException(http_error)
 
 class SheetsService(GoogleService):
@@ -322,14 +334,7 @@ class SheetsService(GoogleService):
                 })
             return values
         except HttpError as e:
-            error_reason = json.loads(e.content)
-            error = error_reason['error']
-            http_error = GoogleApiClientHttpError(
-                error['code'],
-                error['message'],
-                error['status'],
-                error['details'] if 'details' in error else []
-            )
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
             raise GoogleApiClientHttpErrorException(http_error)
 
     def update_file_values(self, spreadsheet_id, rows_range, value_input_option, values):

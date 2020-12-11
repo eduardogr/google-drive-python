@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## Pending: minor version
+
+- Now credentials is the last arugment expected
+  - e.g.: google-drive ls <path> <credentials-file>
+- Now credentials could be a envvar
+  - export CREDENTIALS=credentials.json && google-drive ls <path> <credentials-file>
+- New command `get`. This will retrieve us file's metadata.
+  - e.g.: google-drive get <ID>
+- Extending models.GoogleFile.
+  - Adding: mimeType and exportLinks fields.
+  - Adding export types constants to get export type from a GoogleFile
+
 ## 0.1.3
 
 - fixing cli usecases

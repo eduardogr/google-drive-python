@@ -9,6 +9,7 @@
 
 ## Functionalities
 
+- [X] Implement `get` to get file metadata
 - [ ] Extending `ls` for an ID file.
 - [ ] Extending `mkdir` for a path folder.
 - [ ] Implement `analysis` to extract data from the google drive.

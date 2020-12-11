@@ -18,7 +18,7 @@ class Config:
     ]
 
 @click.command()
-@click.argument('credentials', type=click.Path(exists=True))
+@click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
 def login(credentials):
     """Perform a login with google oauth"""
     GoogleAuth().authenticate(
@@ -26,18 +26,36 @@ def login(credentials):
         scopes=Config.SCOPES)
 
 @click.command()
-@click.argument('credentials', type=click.Path(exists=True))
 @click.argument('path')
+@click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
 def ls(credentials, path):
     """List directory contents"""
     google_drive = GoogleDrive(credentials, Config.SCOPES)
     files = google_drive.googledrive_ls(path)
     for file in files:
-        print(file.name)  # TODO: nice print
+        print(f'- {file}')  # TODO: nice print
 
 @click.command()
-@click.argument('credentials', type=click.Path(exists=True))
+@click.argument('id')
+@click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
+def get(id, credentials):
+    """Get file metadata"""
+    google_drive = GoogleDrive(credentials, Config.SCOPES)
+    google_file = google_drive.get_file_from_id(id)
+
+    print('\nFile Metadata:\n==')
+    print(f'id: {google_file.id}')
+    print(f'name: {google_file.name}')
+    print(f'parents: {google_file.parents}')
+    print(f'mime_type: {google_file.mime_type}')
+    print(f'export_links:')
+
+    for link_type, link in google_file.export_links.items():
+        print(f'  - {link_type}: {link}')
+
+@click.command()
 @click.argument('name')
+@click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
 def mkdir(credentials, name):
     """Make directory"""
     google_drive = GoogleDrive(credentials, Config.SCOPES)
@@ -50,4 +68,5 @@ def googledrive():
 
 googledrive.add_command(login)
 googledrive.add_command(ls)
+googledrive.add_command(get)
 googledrive.add_command(mkdir)
