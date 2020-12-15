@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## Pending
+## pending
+
+## 0.2.1
+
+- fixing models.GoogleApiClientHttpErrorBuilder.from_http_error(), it wasn't  working.
 
 ## 0.2.0
 

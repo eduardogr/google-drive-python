@@ -47,7 +47,7 @@ class GoogleApiClientHttpError:
 class GoogleApiClientHttpErrorBuilder:
 
     def from_http_error(self, http_error: HttpError):
-        error_reason = json.loads(e.content)
+        error_reason = json.loads(http_error.content)
         error = error_reason['error']
         return GoogleApiClientHttpError(
             error['code'],
