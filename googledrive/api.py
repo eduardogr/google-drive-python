@@ -93,6 +93,13 @@ class GoogleDrive(GoogleService):
     QUERY_IS_SPREADSHEET = f"mimeType='{MIMETYPE_SPREADSHEET}'"
     QUERY_IS_FILE = f"({QUERY_IS_SPREADSHEET} or {QUERY_IS_DOCUMENT})"
 
+    #
+    # Simple structures for cached responses
+    #
+
+    cached_get_file = {}
+    cached_ls = {}
+
     def create_folder(self, name):
         file_metadata = {
             'name': name,
@@ -194,18 +201,21 @@ class GoogleDrive(GoogleService):
     # TODO: thinking about a speed up for this, it's very slow
     #
     def googledrive_ls(self, path: str):
-        path = list(self.__split_path(path))
+        if path in self.cached_ls:
+            return self.cached_ls[path]
 
-        if len(path) == 0:
+        splitted_path = list(self.__split_path(path))
+
+        if len(splitted_path) == 0:
             query = f"{GoogleDrive.QUERY_IS_FILE}"
 
         else:
-            folder = self.get_folder(path[0])
+            folder = self.get_folder(splitted_path[0])
             if folder is None:
                 raise MissingGoogleDriveFolderException(
-                        "Missing folder: {}".format(path[0]))
+                        "Missing folder: {}".format(splitted_path[0]))
 
-            for path_element in path[1:]:
+            for path_element in splitted_path[1:]:
                 query = f"{GoogleDrive.QUERY_IS_FOLDER} and '{folder.id}' in parents"
                 folder = self.__get_file(query, path_element)
 
@@ -215,20 +225,28 @@ class GoogleDrive(GoogleService):
 
             query = f"{GoogleDrive.QUERY_IS_FILE} and '{folder.id}' in parents"
 
-        return self.__get_files(query)
+        google_files = self.__get_files(query)
+
+        if google_files is not None:
+            self.cached_ls.update({path: google_files})
+
+        return google_files
 
     def googledrive_get_file(self, path: str):
-        path = list(self.__split_path(path))
+        if path in self.cached_get_file:
+            return self.cached_get_file[path]
 
-        if len(path) == 0:
+        splitted_path = list(self.__split_path(path))
+
+        if len(splitted_path) == 0:
             return None
 
-        folder = self.get_folder(path[0])
+        folder = self.get_folder(splitted_path[0])
         if folder is None:
             raise MissingGoogleDriveFolderException(
                         "Missing folder: {}".format(path[0]))
 
-        path_elements = path[1 : len(path)-1]
+        path_elements = splitted_path[1 : len(splitted_path)-1]
 
         for path_element in path_elements:
             query = f"{GoogleDrive.QUERY_IS_FOLDER} and '{folder.id}' in parents"
@@ -238,9 +256,14 @@ class GoogleDrive(GoogleService):
                 raise MissingGoogleDriveFolderException(
                     "Missing folder: {}".format(path_element))
 
-        filename = path[len(path)-1]
+        filename = splitted_path[len(splitted_path)-1]
         query = f"{GoogleDrive.QUERY_IS_FILE} and '{folder.id}' in parents" 
-        return self.__get_file(query, filename)
+        google_file = self.__get_file(query, filename)
+
+        if google_file is not None:
+            self.cached_get_file.update({path: google_file})
+
+        return google_file
 
     # TODO: this will be called for the touch command
     def create_file(self, path, mimetype):
