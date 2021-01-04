@@ -2,6 +2,12 @@
 
 ## pending
 
+## 0.3.1
+
+
+## 0.3.0
+
+
 ## 0.2.1
 
 - fixing models.GoogleApiClientHttpErrorBuilder.from_http_error(), it wasn't  working.

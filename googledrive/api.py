@@ -151,7 +151,7 @@ class GoogleDrive(GoogleService):
             pageSize=100,
             spaces='drive',
             corpora='user',
-            fields=f'nextPageToken, files({self.FIELDS_BASIC_FILE_METADATA})',
+            fields=f'nextPageToken, files({self.FIELDS_FILE_METADATA})',
             pageToken=page_token).execute()
 
         google_files = [
@@ -247,6 +247,7 @@ class GoogleDrive(GoogleService):
                         "Missing folder: {}".format(path[0]))
 
         path_elements = splitted_path[1 : len(splitted_path)-1]
+        filename = splitted_path[len(splitted_path)-1]
 
         for path_element in path_elements:
             query = f"{GoogleDrive.QUERY_IS_FOLDER} and '{folder.id}' in parents"
@@ -256,7 +257,6 @@ class GoogleDrive(GoogleService):
                 raise MissingGoogleDriveFolderException(
                     "Missing folder: {}".format(path_element))
 
-        filename = splitted_path[len(splitted_path)-1]
         query = f"{GoogleDrive.QUERY_IS_FILE} and '{folder.id}' in parents" 
         google_file = self.__get_file(query, filename)
 
