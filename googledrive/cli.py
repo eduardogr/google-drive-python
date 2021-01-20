@@ -3,6 +3,7 @@ import click
 
 from googledrive.api import GoogleAuth
 from googledrive.api import GoogleDrive
+from googledrive.exceptions import GoogleApiClientHttpErrorException
 
 class Config:
     # If modifying these scopes, delete the file token.pickle.
@@ -30,8 +31,19 @@ def login(credentials):
 @click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
 def ls(credentials, path):
     """List directory contents"""
-    google_drive = GoogleDrive(credentials, Config.SCOPES)
-    files = google_drive.googledrive_ls(path)
+    try:
+        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        files = google_drive.googledrive_ls(path)
+    except GoogleApiClientHttpErrorException as e:
+        error = e.get_google_api_client_http_error()
+        print(f'An http exception occured requesting google\'s API:\n')
+        print(f' - Code: {error.code}')
+        print(f' - Message: {error.message}')
+        print(f' - Status: {error.status}')
+        print(f' - Details: {error.details}')
+        print(f' - Errors: {error.errors}\n')
+        return
+
     for file in files:
         print(f'- {file}')  # TODO: nice print
 
@@ -40,8 +52,18 @@ def ls(credentials, path):
 @click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
 def get(id, credentials):
     """Get file metadata"""
-    google_drive = GoogleDrive(credentials, Config.SCOPES)
-    google_file = google_drive.get_file_from_id(id)
+    try:
+        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        google_file = google_drive.get_file_from_id(id)
+    except GoogleApiClientHttpErrorException as e:
+        error = e.get_google_api_client_http_error()
+        print(f'An http exception occured requesting google\'s API:\n')
+        print(f' - Code: {error.code}')
+        print(f' - Message: {error.message}')
+        print(f' - Status: {error.status}')
+        print(f' - Details: {error.details}')
+        print(f' - Errors: {error.errors}\n')
+        return
 
     print('\nFile Metadata:\n==')
     print(f'id: {google_file.id}')
@@ -58,8 +80,19 @@ def get(id, credentials):
 @click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
 def mkdir(credentials, name):
     """Make directory"""
-    google_drive = GoogleDrive(credentials, Config.SCOPES)
-    folder = google_drive.create_folder(name)
+    try:
+        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        folder = google_drive.create_folder(name)
+    except GoogleApiClientHttpErrorException as e:
+        error = e.get_google_api_client_http_error()
+        print(f'An http exception occured requesting google\'s API:\n')
+        print(f' - Code: {error.code}')
+        print(f' - Message: {error.message}')
+        print(f' - Status: {error.status}')
+        print(f' - Details: {error.details}')
+        print(f' - Errors: {error.errors}\n')
+        return
+
     print(folder) # TODO: nice print
 
 @click.group()

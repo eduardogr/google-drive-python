@@ -12,6 +12,7 @@ from googledrive.models import GoogleApiClientHttpErrorBuilder
 from googledrive.mappers import GoogleFileDictToGoogleFile
 from googledrive.exceptions import MissingGoogleDriveFolderException
 from googledrive.exceptions import MissingGoogleDriveFileException
+from googledrive.exceptions import GoogleApiClientHttpErrorException
 
 class GoogleAuth:
 
@@ -109,9 +110,13 @@ class GoogleDrive(GoogleService):
             self.DRIVE_SERVICE_ID,
             self.DRIVE_SERVICE_VERSION
         )
-        folder = drive_service.files().create(
-            body=file_metadata,
-            fields=self.FIELDS_BASIC_FILE_METADATA).execute()
+        try:
+            folder = drive_service.files().create(
+                body=file_metadata,
+                fields=self.FIELDS_BASIC_FILE_METADATA).execute()
+        except HttpError as e:
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise GoogleApiClientHttpErrorException(http_error)
 
         return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(folder)
 
@@ -120,11 +125,15 @@ class GoogleDrive(GoogleService):
             self.DRIVE_SERVICE_ID,
             self.DRIVE_SERVICE_VERSION
         )
-        file_update = drive_service.files().update(
-            fileId=file_id,
-            addParents=new_parent,
-            removeParents=current_parent)
-        file_update.execute()
+        try:
+            file_update = drive_service.files().update(
+                fileId=file_id,
+                addParents=new_parent,
+                removeParents=current_parent)
+            file_update.execute()
+        except HttpError as e:
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise GoogleApiClientHttpErrorException(http_error)
 
     def get_file_from_id(self, file_id: str):
         drive_service = super().get_service(
@@ -146,13 +155,17 @@ class GoogleDrive(GoogleService):
             self.DRIVE_SERVICE_ID,
             self.DRIVE_SERVICE_VERSION
         )
-        response = drive_service.files().list(
-            q=query,
-            pageSize=100,
-            spaces='drive',
-            corpora='user',
-            fields=f'nextPageToken, files({self.FIELDS_FILE_METADATA})',
-            pageToken=page_token).execute()
+        try:
+            response = drive_service.files().list(
+                q=query,
+                pageSize=100,
+                spaces='drive',
+                corpora='user',
+                fields=f'nextPageToken, files({self.FIELDS_FILE_METADATA})',
+                pageToken=page_token).execute()
+        except HttpError as e:
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise GoogleApiClientHttpErrorException(http_error)
 
         google_files = [
             GoogleFileDictToGoogleFile().google_file_dict_to_google_file(google_file_dict)
@@ -166,28 +179,36 @@ class GoogleDrive(GoogleService):
             self.DRIVE_SERVICE_ID,
             self.DRIVE_SERVICE_VERSION
         )
-        results = drive_service.files().copy(
-            fileId=file_id,
-            body={
-                'name': new_filename,
-                'mimeType': self.MIMETYPE_DOCUMENT
-            }
-        ).execute()
-        return results.get('id')
+        try:
+            results = drive_service.files().copy(
+                fileId=file_id,
+                body={
+                    'name': new_filename,
+                    'mimeType': self.MIMETYPE_DOCUMENT
+                }
+            ).execute()
+            return results.get('id')
+        except HttpError as e:
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise GoogleApiClientHttpErrorException(http_error)
 
     def create_permission(self, document_id: str, role: str, email_address):
         drive_service = super().get_service(
             self.DRIVE_SERVICE_ID,
             self.DRIVE_SERVICE_VERSION
         )
-        drive_service.permissions().create(
-            fileId=document_id,
-            body={
-                'type': 'user',
-                'emailAddress': email_address,
-                'role': role,
-            }
-        ).execute()
+        try:
+            drive_service.permissions().create(
+                fileId=document_id,
+                body={
+                    'type': 'user',
+                    'emailAddress': email_address,
+                    'role': role,
+                }
+            ).execute()
+        except HttpError as e:
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise GoogleApiClientHttpErrorException(http_error)
 
     #
     # High level API access

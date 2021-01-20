@@ -38,11 +38,12 @@ class GoogleFile:
 @dataclass
 class GoogleApiClientHttpError:
 
-    def __init__(self, code, message, status, details):
+    def __init__(self, code, message, status, details, errors):
         self.code = code
         self.message = message
         self.status = status
         self.details = details
+        self.errors = errors
 
 class GoogleApiClientHttpErrorBuilder:
 
@@ -52,6 +53,7 @@ class GoogleApiClientHttpErrorBuilder:
         return GoogleApiClientHttpError(
             error['code'],
             error['message'],
-            error['status'],
-            error['details'] if 'details' in error else []
+            error.get('status', ''),
+            error.get('details', []),
+            error.get('errors', [])
         )
