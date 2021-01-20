@@ -326,7 +326,8 @@ class MockSheetsService(SheetsService):
                 code=429,
                 message="this is a test error message",
                 status=429,
-                details=[]
+                details=[],
+                errors=[]
             )
             raise GoogleApiClientHttpErrorException(error)
 
