@@ -1,4 +1,4 @@
-# google drive python cli
+<h1 align="center"> google drive python </h1> <br>
 
 Library and cli to manage and interact with your Google Drive, sheets and docs
 
