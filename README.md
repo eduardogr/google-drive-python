@@ -5,7 +5,7 @@ Library and cli to manage and interact with your Google Drive, sheets and docs
 - https://pypi.org/project/google-drive/ 
 
 
-## :bookmark_tabs: Table of Contents
+## Table of Contents
 
 1. [Introduction](#introduction)
 1. [Obtaining credentials for Google APIs](#obtaining-credentials-for-google-apis)
@@ -116,7 +116,7 @@ Commands:
   mkdir  Make directory
 ```
 
-## google-drive login
+## google-drive get-mimetypes
 
 Get Mimetypes availables in this API implementation
 
