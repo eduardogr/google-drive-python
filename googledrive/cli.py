@@ -113,7 +113,7 @@ def get_mimetypes(credentials):
         return
 
     for mimetype in mimetypes:
-        print(f'  - {mimetype}')
+        print(f'  - {mimetype}') # TODO: nice print
 
 @click.group()
 def googledrive():

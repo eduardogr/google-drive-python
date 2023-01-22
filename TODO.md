@@ -10,7 +10,7 @@
 
 ## Functionalities
 
-- [X][CLI] Implement `get` to get file metadata
+- [X][CLI] Implement `get` to get file metadata.
 - [ ][CLI] Extending `ls` for an ID file.
 - [ ][CLI] Extending `mkdir` for a path folder.
 - [ ][CLI] Implement `rmdir` for a path folder.
@@ -22,4 +22,11 @@
 - [ ][API] Implement open_file help function for spreadsheets files. This will retrieve an object that will allow us manage that file; reading (readlines); updating; removing, ...
 - [ ][API] Implement readlines help function for spreadsheets files reading.
 - [ ][CLI] Nice print for cli output.
-- [ ][CLI] Add logger with different levels of logging: {ERROR, WARNING, INFO, DEBUG}
+
+## Design
+
+- [ ] Adding design layers to point out where to place which type of code.
+- [ ][CLI] Add logger with different levels of logging: {ERROR, WARNING, INFO, DEBUG}.
+- [ ][CLI] Adding clean architecture layers.
+- [ ][CLI] Adding layer for filter input.
+- [ ][CLI] Adding layer for showing output.
