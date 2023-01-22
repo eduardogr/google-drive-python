@@ -1,3 +1,4 @@
+SHELL:=/bin/bash
 
 install:
 	pip3 install .
@@ -18,5 +19,4 @@ clean:
 	rm -rf build .pytest_cache dist google_drive.egg-info
 
 release:
-	python3 setup.py sdist bdist_wheel && \
-	twine upload dist/*
+	./scripts/release.sh
