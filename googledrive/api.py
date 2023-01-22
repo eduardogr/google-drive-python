@@ -85,6 +85,7 @@ class GoogleDrive(GoogleService):
     MIMETYPE_FOLDER = 'application/vnd.google-apps.folder'
     MIMETYPE_DOCUMENT = 'application/vnd.google-apps.document'
     MIMETYPE_SPREADSHEET = 'application/vnd.google-apps.spreadsheet'
+    MIMETYPE_PDF = 'application/pdf'
 
     FIELDS_BASIC_FILE_METADATA = 'id, name, parents, mimeType'
     FIELDS_FILE_METADATA = f'{FIELDS_BASIC_FILE_METADATA}, exportLinks'
@@ -92,7 +93,8 @@ class GoogleDrive(GoogleService):
     QUERY_IS_FOLDER = f"mimeType='{MIMETYPE_FOLDER}'"
     QUERY_IS_DOCUMENT = f"mimeType='{MIMETYPE_DOCUMENT}'"
     QUERY_IS_SPREADSHEET = f"mimeType='{MIMETYPE_SPREADSHEET}'"
-    QUERY_IS_FILE = f"({QUERY_IS_SPREADSHEET} or {QUERY_IS_DOCUMENT})"
+    QUERY_IS_PDF = f"mimeType='{MIMETYPE_PDF}'"
+    QUERY_IS_FILE = f"({QUERY_IS_FOLDER} or {QUERY_IS_SPREADSHEET} or {QUERY_IS_DOCUMENT} or {QUERY_IS_PDF})"
 
     #
     # Simple structures for cached responses

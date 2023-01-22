@@ -1,14 +1,14 @@
 # linter
-pylint==2.4.4
+pylint==2.16.0b1
 
 # format python code to PEP 8 stlye guide
-autopep8==1.5
+autopep8==2.0.1
 
 # test runner
-pytest==5.4.1
-pytest-cov==2.8.1
+pytest==7.2.1
+pytest-cov==4.0.0
 
 # upgraded Python shell for dev env
-ipython==7.13.0
+ipython==7.23.1
 
-codecov==2.1.3
+codecov==2.1.12

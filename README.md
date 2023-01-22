@@ -9,6 +9,8 @@ Library and cli to manage and interact with your Google Drive, sheets and docs
 
 0. [Introduction](#introduction)
 0. [Obtaining credentials for Google APIs](#wrench-obtaining-credentials-for-google-apis)
+0. [Installing google-drive CLI](#installing-google-drive-cli)
+0. [CLI Documentation](#cli-documentation)
 0. [Contributing](#family-contributing)
 0. [License](#page_with_curl-license)
 
@@ -61,6 +63,121 @@ To generate this we have the make target google-auth, so, you just have to tun
 :warning: Credentials files to authenticate yourself are included in our [.gitignore](.gitignore)
 
 :angel: So, you don't have to worry about that :smiley:
+
+
+# Installing google-drive CLI
+
+## Using make
+
+```
+make install
+```
+
+## Using pip
+
+```
+pip install google-drive
+```
+
+### With specific version
+
+Look for available versions with:
+
+```
+pip install google-drive==
+```
+
+And select one and run:
+
+```
+pip install google-drive==<VERSION>
+```
+
+# CLI Documentation
+
+## google-drive --help
+
+Shows the help message
+
+### Usage
+
+```
+> google-drive --help
+Usage: google-drive [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get    Get file metadata
+  login  Perform a login with google oauth
+  ls     List directory contents
+  mkdir  Make directory
+```
+
+## google-drive login
+
+Perform a login with google oauth.
+
+### Usage
+
+```
+> google-drive login <path-to-credentials-file.json>
+```
+
+## google-drive ls
+
+List directory contents
+
+### Usage
+
+```
+> google-drive ls <directory>/<maybe-some-subdir> <path-to-credentials-file.json>
+- (<GOOGLE_DOC_ID_1>, <FILENAME_1>, <FILE_MIMETYPE_1>)
+- (<GOOGLE_DOC_ID_2>, <FILENAME_2>, <FILE_MIMETYPE_2>)
+- (<GOOGLE_DOC_ID_3>, <FILENAME_3>, <FILE_MIMETYPE_3>)
+...
+- (<GOOGLE_DOC_ID_N>, <FILENAME_N>, <FILE_MIMETYPE_N>)
+```
+
+## google-drive get
+
+Get file metadata
+
+### Usage
+
+```
+> google-drive get <GOOGLE_DOC_ID> <path-to-credentials-file.json>
+
+File Metadata:
+==
+id: <GOOGLE_DOC_ID>
+name: <FILENAME>
+parents: ['<GOOGLE_DOC__PARENT_ID>']
+mime_type: <FILE_MIMETYPE>
+export_links:
+  - application/rtf: https://docs.google.com/feeds/download/documents/export/Export?id=<GOOGLE_DOC_ID>&exportFormat=rtf
+  - application/vnd.oasis.opendocument.text: https://docs.google.com/feeds/download/documents/export/Export?id=<GOOGLE_DOC_ID>&exportFormat=odt
+  - text/html: https://docs.google.com/feeds/download/documents/export/Export?id=<GOOGLE_DOC_ID>&exportFormat=html
+  - application/pdf: https://docs.google.com/feeds/download/documents/export/Export?id=<GOOGLE_DOC_ID>&exportFormat=pdf
+  - application/epub+zip: https://docs.google.com/feeds/download/documents/export/Export?id=<GOOGLE_DOC_ID>&exportFormat=epub
+  - application/zip: https://docs.google.com/feeds/download/documents/export/Export?id=<GOOGLE_DOC_ID>&exportFormat=zip
+  - application/vnd.openxmlformats-officedocument.wordprocessingml.document: https://docs.google.com/feeds/download/documents/export/Export?id=<GOOGLE_DOC_ID>&exportFormat=docx
+  - text/plain: https://docs.google.com/feeds/download/documents/export/Export?id=<GOOGLE_DOC_ID>&exportFormat=txt
+  ```
+
+## google-drive mkdir
+
+Make directory
+
+### Usage
+
+```
+> google-drive mkdir <DIR_NAME> <path-to-credentials-file.json>
+(<GOOGLE_DOC_ID>, <DIR_NAME>, application/vnd.google-apps.folder)
+```
+
+# Using googledrive as API SDK
 
 ## :family: Contributing
 
