@@ -70,6 +70,22 @@ To generate this we have the make target google-auth, so, you just have to tun
 
 Shows the help message
 
+### Usage
+
+```
+> google-drive --help
+Usage: google-drive [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get    Get file metadata
+  login  Perform a login with google oauth
+  ls     List directory contents
+  mkdir  Make directory
+```
+
 ## google-drive login
 
 Perform a login with google oauth.
@@ -77,7 +93,7 @@ Perform a login with google oauth.
 ### Usage
 
 ```
-google-drive login <path-to-credentials-file.json>
+> google-drive login <path-to-credentials-file.json>
 ```
 
 ## google-drive ls
@@ -87,7 +103,7 @@ List directory contents
 ### Usage
 
 ```
-google-drive ls <directory>/<maybe-some-subdir> <path-to-credentials-file.json>
+> google-drive ls <directory>/<maybe-some-subdir> <path-to-credentials-file.json>
 - (<GOOGLE_DOC_ID_1>, <FILENAME_1>, <FILE_MIMETYPE_1>)
 - (<GOOGLE_DOC_ID_2>, <FILENAME_2>, <FILE_MIMETYPE_2>)
 - (<GOOGLE_DOC_ID_3>, <FILENAME_3>, <FILE_MIMETYPE_3>)
@@ -102,7 +118,7 @@ Get file metadata
 ### Usage
 
 ```
-google-drive get <GOOGLE_DOC_ID> <path-to-credentials-file.json>
+> google-drive get <GOOGLE_DOC_ID> <path-to-credentials-file.json>
 
 File Metadata:
 ==
@@ -128,7 +144,7 @@ Make directory
 ### Usage
 
 ```
-google-drive mkdir <DIR_NAME> <path-to-credentials-file.json>
+> google-drive mkdir <DIR_NAME> <path-to-credentials-file.json>
 (<GOOGLE_DOC_ID>, <DIR_NAME>, application/vnd.google-apps.folder)
 ```
 
