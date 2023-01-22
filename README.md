@@ -9,7 +9,7 @@ Library and cli to manage and interact with your Google Drive, sheets and docs
 
 0. [Introduction](#introduction)
 0. [Obtaining credentials for Google APIs](#wrench-obtaining-credentials-for-google-apis)
-0. [Using CLI][#using-cli]
+0. (Using CLI)[#using-cli]
 0. [Contributing](#family-contributing)
 0. [License](#page_with_curl-license)
 
