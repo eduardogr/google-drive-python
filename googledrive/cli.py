@@ -5,6 +5,7 @@ from googledrive.api import GoogleAuth
 from googledrive.api import GoogleDrive
 from googledrive.exceptions import GoogleApiClientHttpErrorException
 
+
 class Config:
     # If modifying these scopes, delete the file token.pickle.
     SCOPES = [
@@ -18,6 +19,7 @@ class Config:
         'https://www.googleapis.com/auth/spreadsheets.readonly',
     ]
 
+
 @click.command()
 @click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
 def login(credentials):
@@ -25,6 +27,7 @@ def login(credentials):
     GoogleAuth().authenticate(
         credentials=credentials,
         scopes=Config.SCOPES)
+
 
 @click.command()
 @click.argument('path')
@@ -46,6 +49,7 @@ def ls(credentials, path):
 
     for file in files:
         print(f'- {file}')  # TODO: nice print
+
 
 @click.command()
 @click.argument('id')
@@ -75,6 +79,7 @@ def get(id, credentials):
     for link_type, link in google_file.export_links.items():
         print(f'  - {link_type}: {link}')
 
+
 @click.command()
 @click.argument('name')
 @click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
@@ -94,6 +99,7 @@ def mkdir(credentials, name):
         return
 
     print(folder) # TODO: nice print
+
 
 @click.command()
 @click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
@@ -115,12 +121,37 @@ def get_mimetypes(credentials):
     for mimetype in mimetypes:
         print(f'  - {mimetype}') # TODO: nice print
 
+
+@click.command()
+@click.argument('name')
+@click.argument('mymetype')
+@click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
+def touch(credentials, mymetype, name):
+    """Get Mimetypes availables in this API implementation"""
+    try:
+        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        file = google_drive.create_file(name=name, mimetype=mymetype)
+    except GoogleApiClientHttpErrorException as e:
+        error = e.get_google_api_client_http_error()
+        print(f'An http exception occured requesting google\'s API:\n')
+        print(f' - Code: {error.code}')
+        print(f' - Message: {error.message}')
+        print(f' - Status: {error.status}')
+        print(f' - Details: {error.details}')
+        print(f' - Errors: {error.errors}\n')
+        return
+
+    print(file) # TODO: nice print
+
+
 @click.group()
 def googledrive():
     pass
+
 
 googledrive.add_command(login)
 googledrive.add_command(ls)
 googledrive.add_command(get)
 googledrive.add_command(mkdir)
 googledrive.add_command(get_mimetypes)
+googledrive.add_command(touch)

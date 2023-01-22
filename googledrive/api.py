@@ -115,7 +115,7 @@ class GoogleDrive(GoogleService):
     def create_folder(self, name):
         file_metadata = {
             'name': name,
-            'mimeType': GoogleDrive.MIMETYPE_FOLDER
+            'mimeType': GoogleDrive.MIMETYPE_FOLDER,
         }
         drive_service = super().get_service(
             self.DRIVE_SERVICE_ID,
@@ -130,6 +130,38 @@ class GoogleDrive(GoogleService):
             raise GoogleApiClientHttpErrorException(http_error)
 
         return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(folder)
+
+    def create_file(self, name, mimetype):
+        splitted_path = list(self.__split_path(name))
+        name = splitted_path[-1]
+
+        parents = []
+        if len(splitted_path) > 1:
+            parent_name = splitted_path[-2]
+            parent_folder = self.get_folder(parent_name)
+            if parent_folder == None:
+                raise MissingGoogleDriveFolderException(
+                        "Missing folder: {}".format(parent_name))
+            parents = [parent_folder.id]
+
+        file_metadata = {
+            'name': name,
+            'mimeType': mimetype,
+            'parents': parents
+        }
+        drive_service = super().get_service(
+            self.DRIVE_SERVICE_ID,
+            self.DRIVE_SERVICE_VERSION
+        )
+        try:
+            file = drive_service.files().create(
+                body=file_metadata,
+                fields=self.FIELDS_BASIC_FILE_METADATA).execute()
+        except HttpError as e:
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise GoogleApiClientHttpErrorException(http_error)
+
+        return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(file)
 
     def update_file_parent(self, file_id, current_parent, new_parent):
         drive_service = super().get_service(
@@ -296,10 +328,6 @@ class GoogleDrive(GoogleService):
             self.cached_get_file.update({path: google_file})
 
         return google_file
-
-    # TODO: this will be called for the touch command
-    def create_file(self, path, mimetype):
-        pass
 
     def __split_path(self, path):
         return filter(lambda x: x != '', path.split('/'))

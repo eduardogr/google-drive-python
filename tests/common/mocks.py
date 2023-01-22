@@ -177,6 +177,18 @@ class MockGoogleDrive(GoogleDrive):
             'folder': name
         }
 
+    def create_file(self, path, mimetype):
+        self.__update_calls(
+            'create_file',
+            params={
+                'path': path,
+                'mimetype': mimetype,
+            }
+        )
+        return {
+            'file': name
+        }
+
     def update_file_parent(self, file_id, current_parent, new_parent):
         self.__update_calls(
             'update_file_parent',
