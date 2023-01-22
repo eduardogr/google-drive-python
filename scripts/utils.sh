@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#
+# Code based in: https://github.com/opentensor/bittensor/blob/master/scripts/release/utils.sh
+#
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
