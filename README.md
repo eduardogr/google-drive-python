@@ -192,6 +192,19 @@ Make directory
 (<GOOGLE_DOC_ID>, <DIR_NAME>, application/vnd.google-apps.folder)
 ```
 
+## google-drive touch
+
+Create empty file of specified mimetype
+
+### Usage
+
+```
+> google-drive touch <EXISTING_DIR>/<FILENAME> <SOME_MYMETYPE> <path-to-credentials-file.json>
+(<GOOGLE_DOC_ID>, <FILENAME>, <SOME_MYMETYPE>)
+```
+
+It could raise `MissingGoogleDriveFolderException` when parent directories do not exist.
+
 # Using googledrive as API SDK
 
 ## :family: Contributing

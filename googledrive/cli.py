@@ -127,7 +127,7 @@ def get_mimetypes(credentials):
 @click.argument('mymetype')
 @click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
 def touch(credentials, mymetype, name):
-    """Get Mimetypes availables in this API implementation"""
+    """Create empty file of specified mimetype"""
     try:
         google_drive = GoogleDrive(credentials, Config.SCOPES)
         file = google_drive.create_file(name=name, mimetype=mymetype)
