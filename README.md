@@ -7,12 +7,12 @@ Library and cli to manage and interact with your Google Drive, sheets and docs
 
 ## :bookmark_tabs: Table of Contents
 
-0. [Introduction](#introduction)
-0. [Obtaining credentials for Google APIs](#obtaining-credentials-for-google-apis)
-0. [Installing google-drive CLI](#installing-google-drive-cli)
-0. [CLI Documentation](#cli-documentation)
-0. [Contributing](#contributing)
-0. [License](#license)
+1. [Introduction](#introduction)
+1. [Obtaining credentials for Google APIs](#obtaining-credentials-for-google-apis)
+1. [Installing google-drive CLI](#installing-google-drive-cli)
+1. [CLI Documentation](#cli-documentation)
+1. [Contributing](#contributing)
+1. [License](#license)
 
 # Introduction 
 [![Build Status](https://travis-ci.org/eduardogr/google-drive-python.svg?branch=main)](https://travis-ci.org/github/eduardogr/google-drive-python)
