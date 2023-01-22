@@ -86,6 +86,18 @@ class GoogleDrive(GoogleService):
     MIMETYPE_DOCUMENT = 'application/vnd.google-apps.document'
     MIMETYPE_SPREADSHEET = 'application/vnd.google-apps.spreadsheet'
     MIMETYPE_PDF = 'application/pdf'
+    MIMETYPE_DRAWING = 'application/vnd.google-apps.drawing'
+    MIMETYPE_FORM = 'application/vnd.google-apps.form'
+    MIMETYPE_PRESENTATION = 'application/vnd.google-apps.presentation'
+    ALL_MIMETYPES = [
+        MIMETYPE_FOLDER,
+        MIMETYPE_DOCUMENT,
+        MIMETYPE_SPREADSHEET,
+        MIMETYPE_PDF,
+        MIMETYPE_DRAWING,
+        MIMETYPE_FORM,
+        MIMETYPE_PRESENTATION,
+    ]
 
     FIELDS_BASIC_FILE_METADATA = 'id, name, parents, mimeType'
     FIELDS_FILE_METADATA = f'{FIELDS_BASIC_FILE_METADATA}, exportLinks'
@@ -103,10 +115,13 @@ class GoogleDrive(GoogleService):
     cached_get_file = {}
     cached_ls = {}
 
+    def get_mymetypes(self):
+        return GoogleDrive.ALL_MIMETYPES
+
     def create_folder(self, name):
         file_metadata = {
             'name': name,
-            'mimeType': GoogleDrive.MIMETYPE_FOLDER
+            'mimeType': GoogleDrive.MIMETYPE_FOLDER,
         }
         drive_service = super().get_service(
             self.DRIVE_SERVICE_ID,
@@ -121,6 +136,38 @@ class GoogleDrive(GoogleService):
             raise GoogleApiClientHttpErrorException(http_error)
 
         return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(folder)
+
+    def create_file(self, name, mimetype):
+        splitted_path = list(self.__split_path(name))
+        name = splitted_path[-1]
+
+        parents = []
+        if len(splitted_path) > 1:
+            parent_name = splitted_path[-2]
+            parent_folder = self.get_folder(parent_name)
+            if parent_folder == None:
+                raise MissingGoogleDriveFolderException(
+                        "Missing folder: {}".format(parent_name))
+            parents = [parent_folder.id]
+
+        file_metadata = {
+            'name': name,
+            'mimeType': mimetype,
+            'parents': parents
+        }
+        drive_service = super().get_service(
+            self.DRIVE_SERVICE_ID,
+            self.DRIVE_SERVICE_VERSION
+        )
+        try:
+            file = drive_service.files().create(
+                body=file_metadata,
+                fields=self.FIELDS_BASIC_FILE_METADATA).execute()
+        except HttpError as e:
+            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise GoogleApiClientHttpErrorException(http_error)
+
+        return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(file)
 
     def update_file_parent(self, file_id, current_parent, new_parent):
         drive_service = super().get_service(
@@ -287,10 +334,6 @@ class GoogleDrive(GoogleService):
             self.cached_get_file.update({path: google_file})
 
         return google_file
-
-    # TODO: this will be called for the touch command
-    def create_file(self, path, mimetype):
-        pass
 
     def __split_path(self, path):
         return filter(lambda x: x != '', path.split('/'))

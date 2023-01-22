@@ -110,9 +110,24 @@ Options:
 
 Commands:
   get    Get file metadata
+  get-mimetypes  Get Mimetypes availables in this API implementation
   login  Perform a login with google oauth
   ls     List directory contents
   mkdir  Make directory
+```
+
+## google-drive login
+
+Get Mimetypes availables in this API implementation
+
+### Usage
+
+```
+>  google-drive get-mimetypes credentials.json
+  - application/vnd.google-apps.folder
+  - application/vnd.google-apps.document
+  - application/vnd.google-apps.spreadsheet
+  - application/pdf
 ```
 
 ## google-drive login
@@ -176,6 +191,19 @@ Make directory
 > google-drive mkdir <DIR_NAME> <path-to-credentials-file.json>
 (<GOOGLE_DOC_ID>, <DIR_NAME>, application/vnd.google-apps.folder)
 ```
+
+## google-drive touch
+
+Create empty file of specified mimetype
+
+### Usage
+
+```
+> google-drive touch <EXISTING_DIR>/<FILENAME> <SOME_MYMETYPE> <path-to-credentials-file.json>
+(<GOOGLE_DOC_ID>, <FILENAME>, <SOME_MYMETYPE>)
+```
+
+It could raise `MissingGoogleDriveFolderException` when parent directories do not exist.
 
 # Using googledrive as API SDK
 

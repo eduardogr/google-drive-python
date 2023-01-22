@@ -63,6 +63,38 @@ class TestGoogleDrive(TestCase):
 
         self.sut.create_folder(name)
 
+    def test_create_file_when_no_parent_ok(self):
+        path = 'filename'
+        mimetype = GoogleDrive.MIMETYPE_DOCUMENT
+
+        self.sut.create_file(path, mimetype)
+
+    def test_create_file_when_parent_ok(self):
+        # given:
+        parent_folder = 'parentfolder'
+        path = f"{parent_folder}/filename"
+        mimetype = GoogleDrive.MIMETYPE_DOCUMENT
+        files = [
+            {
+                'name': parent_folder,
+                'id': parent_folder,
+                'parents': []
+            }
+        ]
+        files_by_query = {
+            GoogleDrive.QUERY_IS_FOLDER: RawGoogleListMock(files),
+        }
+        raw_google_service_files = RawGoogleServiceFilesMock(files_by_query)
+        drive_service = RawGoogleServiceMock(raw_google_service_files)
+        self.sut.set_service(
+            GoogleDrive.DRIVE_SERVICE_ID,
+            GoogleDrive.DRIVE_SERVICE_VERSION,
+            drive_service
+        )
+
+        # when:
+        self.sut.create_file(path, mimetype)
+
     def test_googledrive_ls_when_folder_no_exists(self):
         # when:
         with self.assertRaises(MissingGoogleDriveFolderException):

@@ -4,7 +4,7 @@ install:
 	pip3 install .
 
 install-dev:
-	pip3 install '.[dev]'
+	pip3 install -e '.[dev]'
 
 test:
 	pytest $(ARGS)
