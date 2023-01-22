@@ -95,6 +95,26 @@ def mkdir(credentials, name):
 
     print(folder) # TODO: nice print
 
+@click.command()
+@click.argument('credentials', envvar='CREDENTIALS', type=click.Path(exists=True))
+def get_mimetypes(credentials):
+    """Get Mimetypes availables in this API implementation"""
+    try:
+        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        mimetypes = google_drive.get_mymetypes()
+    except GoogleApiClientHttpErrorException as e:
+        error = e.get_google_api_client_http_error()
+        print(f'An http exception occured requesting google\'s API:\n')
+        print(f' - Code: {error.code}')
+        print(f' - Message: {error.message}')
+        print(f' - Status: {error.status}')
+        print(f' - Details: {error.details}')
+        print(f' - Errors: {error.errors}\n')
+        return
+
+    for mimetype in mimetypes:
+        print(f'  - {mimetype}')
+
 @click.group()
 def googledrive():
     pass
@@ -103,3 +123,4 @@ googledrive.add_command(login)
 googledrive.add_command(ls)
 googledrive.add_command(get)
 googledrive.add_command(mkdir)
+googledrive.add_command(get_mimetypes)

@@ -110,9 +110,24 @@ Options:
 
 Commands:
   get    Get file metadata
+  get-mimetypes  Get Mimetypes availables in this API implementation
   login  Perform a login with google oauth
   ls     List directory contents
   mkdir  Make directory
+```
+
+## google-drive login
+
+Get Mimetypes availables in this API implementation
+
+### Usage
+
+```
+>  google-drive get-mimetypes credentials.json
+  - application/vnd.google-apps.folder
+  - application/vnd.google-apps.document
+  - application/vnd.google-apps.spreadsheet
+  - application/pdf
 ```
 
 ## google-drive login

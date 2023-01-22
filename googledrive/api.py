@@ -86,6 +86,12 @@ class GoogleDrive(GoogleService):
     MIMETYPE_DOCUMENT = 'application/vnd.google-apps.document'
     MIMETYPE_SPREADSHEET = 'application/vnd.google-apps.spreadsheet'
     MIMETYPE_PDF = 'application/pdf'
+    ALL_MIMETYPES = [
+        MIMETYPE_FOLDER,
+        MIMETYPE_DOCUMENT,
+        MIMETYPE_SPREADSHEET,
+        MIMETYPE_PDF
+    ]
 
     FIELDS_BASIC_FILE_METADATA = 'id, name, parents, mimeType'
     FIELDS_FILE_METADATA = f'{FIELDS_BASIC_FILE_METADATA}, exportLinks'
@@ -102,6 +108,9 @@ class GoogleDrive(GoogleService):
 
     cached_get_file = {}
     cached_ls = {}
+
+    def get_mymetypes(self):
+        return GoogleDrive.ALL_MIMETYPES
 
     def create_folder(self, name):
         file_metadata = {
