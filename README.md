@@ -8,11 +8,11 @@ Library and cli to manage and interact with your Google Drive, sheets and docs
 ## :bookmark_tabs: Table of Contents
 
 0. [Introduction](#introduction)
-0. [Obtaining credentials for Google APIs](#wrench-obtaining-credentials-for-google-apis)
+0. [Obtaining credentials for Google APIs](#obtaining-credentials-for-google-apis)
 0. [Installing google-drive CLI](#installing-google-drive-cli)
 0. [CLI Documentation](#cli-documentation)
-0. [Contributing](#family-contributing)
-0. [License](#page_with_curl-license)
+0. [Contributing](#contributing)
+0. [License](#license)
 
 # Introduction 
 [![Build Status](https://travis-ci.org/eduardogr/google-drive-python.svg?branch=main)](https://travis-ci.org/github/eduardogr/google-drive-python)
@@ -21,7 +21,7 @@ Library and cli to manage and interact with your Google Drive, sheets and docs
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/eduardogr/google-drive-python/blob/main/LICENSE)  
 
-## :wrench: Obtaining credentials for Google APIs
+## Obtaining credentials for Google APIs
 
 ### Google API credentials
 
@@ -207,7 +207,7 @@ It could raise `MissingGoogleDriveFolderException` when parent directories do no
 
 # Using googledrive as API SDK
 
-## :family: Contributing
+## Contributing
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -216,6 +216,6 @@ details.
 
 You can visit our [TODO](TODO.md) list :)
 
-## :page_with_curl: License
+## License
 
 This project is licensed under the [Apache license](https://github.com/eduardogr/google-drive-python/blob/main/LICENSE).
