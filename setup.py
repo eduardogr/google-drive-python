@@ -15,13 +15,12 @@ def read_requirements(path):
     with pathlib.Path(path).open() as requirements_txt:
         return [
             str(requirement)
-            for requirement
-            in pkg_resources.parse_requirements(requirements_txt)
+            for requirement in pkg_resources.parse_requirements(requirements_txt)
         ]
 
 
-requirements = read_requirements('requirements/prod.txt')
-extra_requirements_dev = read_requirements('requirements/dev.txt')
+requirements = read_requirements("requirements/prod.txt")
+extra_requirements_dev = read_requirements("requirements/dev.txt")
 
 
 setup(
@@ -35,19 +34,15 @@ setup(
     license="Apache",
     keywords="google drive",
     url="https://github.com/eduardogr/google-drive-python",
-    packages=['googledrive'],
+    packages=["googledrive"],
     install_requires=requirements,
-    extras_require={
-        'dev': extra_requirements_dev
-    },
+    extras_require={"dev": extra_requirements_dev},
     long_description=read("README.md"),
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Topic :: Software Development :: Libraries",
         "License :: OSI Approved :: Apache Software License",
     ],
-    entry_points={
-        'console_scripts': ['google-drive = googledrive.cli:googledrive'],
-    },
+    entry_points={"console_scripts": ["google-drive = googledrive.cli:googledrive"]},
 )
