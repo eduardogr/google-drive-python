@@ -66,3 +66,16 @@ Commands:
 ...
 ...
 ```
+
+## Code & Commit Conventions (CCC)
+
+This library conforms to the `black` python coding format and expect that contributions follow the git commit style conventions in the [Style Guide](<STYLE.md>).
+
+Synopsis:
+  - Use `black` code [formatter](https://black.readthedocs.io/en/stable/)
+  - Make commits [atomic](https://www.freshconsulting.com/insights/blog/atomic-commits/)
+  - Separate subject from body with a blank line
+  - Limit the subject line to 50 characters
+  - Use the imperative mood in the subject line
+  - Wrap the body at 72 characters
+  - Use the body to explain what and why vs. how
