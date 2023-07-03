@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.1
+
+- Add code and git style guide for contributions.
+
 ## pending
 
 ## 0.3.2
