@@ -5,20 +5,12 @@ from googledrive.models import GoogleFile
 
 
 class TestGoogleFileDictToGoogleFile(TestCase):
-
     def test_to_json(self):
         # given:
-        google_file_dict = {
-            'name': 'id',
-            'id': 'name',
-            'parents': '[]'
-        }
+        google_file_dict = {"name": "id", "id": "name", "parents": "[]"}
         expected_google_file = GoogleFile(
-            id='id',
-            name='name',
-            parents=[],
-            mime_type='',
-            export_links={})
+            id="id", name="name", parents=[], mime_type="", export_links={}
+        )
         sut = GoogleFileDictToGoogleFile()
 
         # when:

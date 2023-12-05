@@ -211,7 +211,7 @@ It could raise `MissingGoogleDriveFolderException` when parent directories do no
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-Contributions are welcome! Please see our [Contributing Guide](<CONTRIBUTING.md>) for more
+Contributions are welcome! Please see our [Contributing Guide](<CONTRIBUTING.md>) and [Style Guide](<STYLE.md>) for more
 details. 
 
 You can visit our [TODO](TODO.md) list :)

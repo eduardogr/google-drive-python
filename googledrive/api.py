@@ -14,8 +14,8 @@ from googledrive.exceptions import MissingGoogleDriveFolderException
 from googledrive.exceptions import MissingGoogleDriveFileException
 from googledrive.exceptions import GoogleApiClientHttpErrorException
 
-class GoogleAuth:
 
+class GoogleAuth:
     def authenticate(self, credentials, scopes):
         """
         Obtaining auth with needed apis
@@ -24,23 +24,22 @@ class GoogleAuth:
         # The file token.pickle stores the user's access
         # and refresh tokens, and is created automatically
         # when the authorization flow completes for the first time.
-        if os.path.exists('token.pickle'):
-            with open('token.pickle', 'rb') as token:
+        if os.path.exists("token.pickle"):
+            with open("token.pickle", "rb") as token:
                 creds = pickle.load(token)
         # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    credentials,
-                    scopes)
+                flow = InstalledAppFlow.from_client_secrets_file(credentials, scopes)
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
-            with open('token.pickle', 'wb') as token:
+            with open("token.pickle", "wb") as token:
                 pickle.dump(creds, token)
 
         return creds
+
 
 class GoogleService:
 
@@ -53,42 +52,44 @@ class GoogleService:
 
     def get_service(self, service_id, service_version):
         if not service_id in self.__services_by_id:
-            self.__services_by_id.update({
-                service_id: {}
-            })
+            self.__services_by_id.update({service_id: {}})
 
         if not service_version in self.__services_by_id[service_id]:
-            self.__services_by_id[service_id].update({
-                service_version: build(
-                    service_id,
-                    service_version,
-                    credentials=self.__get_credentials(),
-                    cache_discovery=False)
-            })
+            self.__services_by_id[service_id].update(
+                {
+                    service_version: build(
+                        service_id,
+                        service_version,
+                        credentials=self.__get_credentials(),
+                        cache_discovery=False,
+                    )
+                }
+            )
 
         return self.__services_by_id[service_id][service_version]
 
     def __get_credentials(self):
         if self.__credentials is None:
             self.__credentials = GoogleAuth().authenticate(
-                self.__credentials_file,
-                self.__scopes)
+                self.__credentials_file, self.__scopes
+            )
         return self.__credentials
+
 
 class GoogleDrive(GoogleService):
 
-    DRIVE_SERVICE_ID = 'drive'
-    DRIVE_SERVICE_VERSION = 'v3'
+    DRIVE_SERVICE_ID = "drive"
+    DRIVE_SERVICE_VERSION = "v3"
 
-    PERMISSION_ROLE_COMMENTER = 'commenter'
+    PERMISSION_ROLE_COMMENTER = "commenter"
 
-    MIMETYPE_FOLDER = 'application/vnd.google-apps.folder'
-    MIMETYPE_DOCUMENT = 'application/vnd.google-apps.document'
-    MIMETYPE_SPREADSHEET = 'application/vnd.google-apps.spreadsheet'
-    MIMETYPE_PDF = 'application/pdf'
-    MIMETYPE_DRAWING = 'application/vnd.google-apps.drawing'
-    MIMETYPE_FORM = 'application/vnd.google-apps.form'
-    MIMETYPE_PRESENTATION = 'application/vnd.google-apps.presentation'
+    MIMETYPE_FOLDER = "application/vnd.google-apps.folder"
+    MIMETYPE_DOCUMENT = "application/vnd.google-apps.document"
+    MIMETYPE_SPREADSHEET = "application/vnd.google-apps.spreadsheet"
+    MIMETYPE_PDF = "application/pdf"
+    MIMETYPE_DRAWING = "application/vnd.google-apps.drawing"
+    MIMETYPE_FORM = "application/vnd.google-apps.form"
+    MIMETYPE_PRESENTATION = "application/vnd.google-apps.presentation"
     ALL_MIMETYPES = [
         MIMETYPE_FOLDER,
         MIMETYPE_DOCUMENT,
@@ -99,8 +100,8 @@ class GoogleDrive(GoogleService):
         MIMETYPE_PRESENTATION,
     ]
 
-    FIELDS_BASIC_FILE_METADATA = 'id, name, parents, mimeType'
-    FIELDS_FILE_METADATA = f'{FIELDS_BASIC_FILE_METADATA}, exportLinks'
+    FIELDS_BASIC_FILE_METADATA = "id, name, parents, mimeType"
+    FIELDS_FILE_METADATA = f"{FIELDS_BASIC_FILE_METADATA}, exportLinks"
 
     QUERY_IS_FOLDER = f"mimeType='{MIMETYPE_FOLDER}'"
     QUERY_IS_DOCUMENT = f"mimeType='{MIMETYPE_DOCUMENT}'"
@@ -119,18 +120,16 @@ class GoogleDrive(GoogleService):
         return GoogleDrive.ALL_MIMETYPES
 
     def create_folder(self, name):
-        file_metadata = {
-            'name': name,
-            'mimeType': GoogleDrive.MIMETYPE_FOLDER,
-        }
+        file_metadata = {"name": name, "mimeType": GoogleDrive.MIMETYPE_FOLDER}
         drive_service = super().get_service(
-            self.DRIVE_SERVICE_ID,
-            self.DRIVE_SERVICE_VERSION
+            self.DRIVE_SERVICE_ID, self.DRIVE_SERVICE_VERSION
         )
         try:
-            folder = drive_service.files().create(
-                body=file_metadata,
-                fields=self.FIELDS_BASIC_FILE_METADATA).execute()
+            folder = (
+                drive_service.files()
+                .create(body=file_metadata, fields=self.FIELDS_BASIC_FILE_METADATA)
+                .execute()
+            )
         except HttpError as e:
             http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
             raise GoogleApiClientHttpErrorException(http_error)
@@ -147,22 +146,20 @@ class GoogleDrive(GoogleService):
             parent_folder = self.get_folder(parent_name)
             if parent_folder == None:
                 raise MissingGoogleDriveFolderException(
-                        "Missing folder: {}".format(parent_name))
+                    "Missing folder: {}".format(parent_name)
+                )
             parents = [parent_folder.id]
 
-        file_metadata = {
-            'name': name,
-            'mimeType': mimetype,
-            'parents': parents
-        }
+        file_metadata = {"name": name, "mimeType": mimetype, "parents": parents}
         drive_service = super().get_service(
-            self.DRIVE_SERVICE_ID,
-            self.DRIVE_SERVICE_VERSION
+            self.DRIVE_SERVICE_ID, self.DRIVE_SERVICE_VERSION
         )
         try:
-            file = drive_service.files().create(
-                body=file_metadata,
-                fields=self.FIELDS_BASIC_FILE_METADATA).execute()
+            file = (
+                drive_service.files()
+                .create(body=file_metadata, fields=self.FIELDS_BASIC_FILE_METADATA)
+                .execute()
+            )
         except HttpError as e:
             http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
             raise GoogleApiClientHttpErrorException(http_error)
@@ -171,14 +168,12 @@ class GoogleDrive(GoogleService):
 
     def update_file_parent(self, file_id, current_parent, new_parent):
         drive_service = super().get_service(
-            self.DRIVE_SERVICE_ID,
-            self.DRIVE_SERVICE_VERSION
+            self.DRIVE_SERVICE_ID, self.DRIVE_SERVICE_VERSION
         )
         try:
             file_update = drive_service.files().update(
-                fileId=file_id,
-                addParents=new_parent,
-                removeParents=current_parent)
+                fileId=file_id, addParents=new_parent, removeParents=current_parent
+            )
             file_update.execute()
         except HttpError as e:
             http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
@@ -186,74 +181,79 @@ class GoogleDrive(GoogleService):
 
     def get_file_from_id(self, file_id: str):
         drive_service = super().get_service(
-            self.DRIVE_SERVICE_ID,
-            self.DRIVE_SERVICE_VERSION
+            self.DRIVE_SERVICE_ID, self.DRIVE_SERVICE_VERSION
         )
         try:
-            google_file_dict = drive_service.files().get(
-                fileId=file_id,
-                fields=self.FIELDS_FILE_METADATA).execute()
+            google_file_dict = (
+                drive_service.files()
+                .get(fileId=file_id, fields=self.FIELDS_FILE_METADATA)
+                .execute()
+            )
 
-            return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(google_file_dict)
+            return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(
+                google_file_dict
+            )
         except HttpError as e:
             http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
             raise GoogleApiClientHttpErrorException(http_error)
 
     def list_files(self, page_token: str, query: str):
         drive_service = super().get_service(
-            self.DRIVE_SERVICE_ID,
-            self.DRIVE_SERVICE_VERSION
+            self.DRIVE_SERVICE_ID, self.DRIVE_SERVICE_VERSION
         )
         try:
-            response = drive_service.files().list(
-                q=query,
-                pageSize=100,
-                spaces='drive',
-                corpora='user',
-                fields=f'nextPageToken, files({self.FIELDS_FILE_METADATA})',
-                pageToken=page_token).execute()
+            response = (
+                drive_service.files()
+                .list(
+                    q=query,
+                    pageSize=100,
+                    spaces="drive",
+                    corpora="user",
+                    fields=f"nextPageToken, files({self.FIELDS_FILE_METADATA})",
+                    pageToken=page_token,
+                )
+                .execute()
+            )
         except HttpError as e:
             http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
             raise GoogleApiClientHttpErrorException(http_error)
 
         google_files = [
-            GoogleFileDictToGoogleFile().google_file_dict_to_google_file(google_file_dict)
-            for google_file_dict in response.get('files', [])]
-        next_page_token = response.get('nextPageToken', None)
+            GoogleFileDictToGoogleFile().google_file_dict_to_google_file(
+                google_file_dict
+            )
+            for google_file_dict in response.get("files", [])
+        ]
+        next_page_token = response.get("nextPageToken", None)
 
         return google_files, next_page_token
 
     def copy_file(self, file_id, new_filename):
         drive_service = super().get_service(
-            self.DRIVE_SERVICE_ID,
-            self.DRIVE_SERVICE_VERSION
+            self.DRIVE_SERVICE_ID, self.DRIVE_SERVICE_VERSION
         )
         try:
-            results = drive_service.files().copy(
-                fileId=file_id,
-                body={
-                    'name': new_filename,
-                    'mimeType': self.MIMETYPE_DOCUMENT
-                }
-            ).execute()
-            return results.get('id')
+            results = (
+                drive_service.files()
+                .copy(
+                    fileId=file_id,
+                    body={"name": new_filename, "mimeType": self.MIMETYPE_DOCUMENT},
+                )
+                .execute()
+            )
+            return results.get("id")
         except HttpError as e:
             http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
             raise GoogleApiClientHttpErrorException(http_error)
 
     def create_permission(self, document_id: str, role: str, email_address):
         drive_service = super().get_service(
-            self.DRIVE_SERVICE_ID,
-            self.DRIVE_SERVICE_VERSION
+            self.DRIVE_SERVICE_ID, self.DRIVE_SERVICE_VERSION
         )
         try:
             drive_service.permissions().create(
                 fileId=document_id,
-                body={
-                    'type': 'user',
-                    'emailAddress': email_address,
-                    'role': role,
-                }
+                body={"type": "user", "emailAddress": email_address, "role": role},
             ).execute()
         except HttpError as e:
             http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
@@ -283,7 +283,8 @@ class GoogleDrive(GoogleService):
             folder = self.get_folder(splitted_path[0])
             if folder is None:
                 raise MissingGoogleDriveFolderException(
-                        "Missing folder: {}".format(splitted_path[0]))
+                    "Missing folder: {}".format(splitted_path[0])
+                )
 
             for path_element in splitted_path[1:]:
                 query = f"{GoogleDrive.QUERY_IS_FOLDER} and '{folder.id}' in parents"
@@ -291,7 +292,8 @@ class GoogleDrive(GoogleService):
 
                 if folder is None:
                     raise MissingGoogleDriveFolderException(
-                        "Missing folder: {}".format(path_element))
+                        "Missing folder: {}".format(path_element)
+                    )
 
             query = f"{GoogleDrive.QUERY_IS_FILE} and '{folder.id}' in parents"
 
@@ -314,10 +316,11 @@ class GoogleDrive(GoogleService):
         folder = self.get_folder(splitted_path[0])
         if folder is None:
             raise MissingGoogleDriveFolderException(
-                        "Missing folder: {}".format(path[0]))
+                "Missing folder: {}".format(path[0])
+            )
 
-        path_elements = splitted_path[1 : len(splitted_path)-1]
-        filename = splitted_path[len(splitted_path)-1]
+        path_elements = splitted_path[1 : len(splitted_path) - 1]
+        filename = splitted_path[len(splitted_path) - 1]
 
         for path_element in path_elements:
             query = f"{GoogleDrive.QUERY_IS_FOLDER} and '{folder.id}' in parents"
@@ -325,9 +328,10 @@ class GoogleDrive(GoogleService):
 
             if folder is None:
                 raise MissingGoogleDriveFolderException(
-                    "Missing folder: {}".format(path_element))
+                    "Missing folder: {}".format(path_element)
+                )
 
-        query = f"{GoogleDrive.QUERY_IS_FILE} and '{folder.id}' in parents" 
+        query = f"{GoogleDrive.QUERY_IS_FILE} and '{folder.id}' in parents"
         google_file = self.__get_file(query, filename)
 
         if google_file is not None:
@@ -336,7 +340,7 @@ class GoogleDrive(GoogleService):
         return google_file
 
     def __split_path(self, path):
-        return filter(lambda x: x != '', path.split('/'))
+        return filter(lambda x: x != "", path.split("/"))
 
     def __get_file(self, query: str, filename):
         files = self.__get_files(query)
@@ -351,8 +355,7 @@ class GoogleDrive(GoogleService):
             total_google_files = []
             while True:
                 google_files, next_page_token = self.list_files(
-                    page_token=page_token,
-                    query=query
+                    page_token=page_token, query=query
                 )
                 total_google_files = total_google_files + google_files
 
@@ -365,26 +368,24 @@ class GoogleDrive(GoogleService):
             http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
             raise GoogleApiClientHttpErrorException(http_error)
 
+
 class SheetsService(GoogleService):
 
-    SHEETS_SERVICE_ID = 'sheets'
-    SHEETS_SERVICE_VERSION = 'v4'
+    SHEETS_SERVICE_ID = "sheets"
+    SHEETS_SERVICE_VERSION = "v4"
 
     cached_file_values = {}
 
     def create_spreadsheet(self, filename):
-        file_metadata = {
-            'properties': {
-                'title': filename,
-            }
-        }
+        file_metadata = {"properties": {"title": filename}}
         sheets_service = super().get_service(
-            self.SHEETS_SERVICE_ID,
-            self.SHEETS_SERVICE_VERSION
+            self.SHEETS_SERVICE_ID, self.SHEETS_SERVICE_VERSION
         )
-        spreadsheet = sheets_service.spreadsheets().create(
-            body=file_metadata,
-            fields='spreadsheetId').execute()
+        spreadsheet = (
+            sheets_service.spreadsheets()
+            .create(body=file_metadata, fields="spreadsheetId")
+            .execute()
+        )
         return spreadsheet
 
     # TODO:
@@ -395,11 +396,12 @@ class SheetsService(GoogleService):
     #
     def get_file_values(self, spreadsheet_id, rows_range):
         if spreadsheet_id is None:
-            raise MissingGoogleDriveFileException('Missing file: {}'.format(spreadsheet_id))
+            raise MissingGoogleDriveFileException(
+                "Missing file: {}".format(spreadsheet_id)
+            )
 
         sheets_service = super().get_service(
-            self.SHEETS_SERVICE_ID,
-            self.SHEETS_SERVICE_VERSION
+            self.SHEETS_SERVICE_ID, self.SHEETS_SERVICE_VERSION
         )
 
         if spreadsheet_id in self.cached_file_values:
@@ -409,40 +411,40 @@ class SheetsService(GoogleService):
         sheet = sheets_service.spreadsheets()
 
         try:
-            result = sheet.values().get(
-                spreadsheetId=spreadsheet_id,
-                range=rows_range
-            ).execute()
-            values = result.get('values', [])
+            result = (
+                sheet.values()
+                .get(spreadsheetId=spreadsheet_id, range=rows_range)
+                .execute()
+            )
+            values = result.get("values", [])
 
             if len(values) > 0:
-                self.cached_file_values.update({
-                    spreadsheet_id: {
-                        rows_range: values
-                    }
-                })
+                self.cached_file_values.update({spreadsheet_id: {rows_range: values}})
             return values
         except HttpError as e:
             http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
             raise GoogleApiClientHttpErrorException(http_error)
 
-    def update_file_values(self, spreadsheet_id, rows_range, value_input_option, values):
+    def update_file_values(
+        self, spreadsheet_id, rows_range, value_input_option, values
+    ):
         sheets_service = super().get_service(
-            self.SHEETS_SERVICE_ID,
-            self.SHEETS_SERVICE_VERSION
+            self.SHEETS_SERVICE_ID, self.SHEETS_SERVICE_VERSION
         )
         sheet = sheets_service.spreadsheets()
 
-        value_range_body = {
-            'values': values
-        }
-        result = sheet.values().update(
-            spreadsheetId=spreadsheet_id,
-            range=rows_range,
-            valueInputOption=value_input_option,
-            body=value_range_body
-        ).execute()
-        return result.get('values', [])
+        value_range_body = {"values": values}
+        result = (
+            sheet.values()
+            .update(
+                spreadsheetId=spreadsheet_id,
+                range=rows_range,
+                valueInputOption=value_input_option,
+                body=value_range_body,
+            )
+            .execute()
+        )
+        return result.get("values", [])
 
     #
     # High level API access
@@ -451,86 +453,80 @@ class SheetsService(GoogleService):
     def open_file(self, spreadheet_id):
         pass
 
+
 class DocsService(GoogleService):
 
-    DOCS_SERVICE_ID = 'docs'
-    DOCS_SERVICE_VERSION = 'v1'
+    DOCS_SERVICE_ID = "docs"
+    DOCS_SERVICE_VERSION = "v1"
 
-    ELEMENTS = 'elements'
-    START_INDEX = 'startIndex'
-    END_INDEX = 'endIndex'
+    ELEMENTS = "elements"
+    START_INDEX = "startIndex"
+    END_INDEX = "endIndex"
 
-    PARAGRAPH = 'paragraph'
-    HORIZONTAL_RULE = 'horizontalRule'
+    PARAGRAPH = "paragraph"
+    HORIZONTAL_RULE = "horizontalRule"
 
-    TEXT_RUN = 'textRun'
-    CONTENT = 'content'
+    TEXT_RUN = "textRun"
+    CONTENT = "content"
 
     def get_document(self, document_id):
         docs_service = super().get_service(
-            self.DOCS_SERVICE_ID,
-            self.DOCS_SERVICE_VERSION
+            self.DOCS_SERVICE_ID, self.DOCS_SERVICE_VERSION
         )
         return docs_service.documents().get(documentId=document_id).execute()
 
     def batch_update(self, document_id, requests):
         docs_service = super().get_service(
-            self.DOCS_SERVICE_ID,
-            self.DOCS_SERVICE_VERSION
+            self.DOCS_SERVICE_ID, self.DOCS_SERVICE_VERSION
         )
         docs_service.documents().batchUpdate(
-            documentId=document_id,
-            body={'requests': requests}).execute()
+            documentId=document_id, body={"requests": requests}
+        ).execute()
+
 
 class FilesAPI(GoogleDrive, SheetsService, DocsService):
-    '''
+    """
     Composition of google APIs
-    '''
+    """
 
     def create_sheet(self, folder_parent, folder, filename: str):
         spreadsheet = super().create_spreadsheet(filename)
-        spreadsheet_id = spreadsheet.get('spreadsheetId')
+        spreadsheet_id = spreadsheet.get("spreadsheetId")
         super().update_file_parent(
-            file_id=spreadsheet_id,
-            current_parent=folder_parent,
-            new_parent=folder.id
+            file_id=spreadsheet_id, current_parent=folder_parent, new_parent=folder.id
         )
         # TODO:
         # return create('/folder_parent/folder/filename', mimetype='blablabal.spreadsheet')
         return spreadsheet_id
 
-    def get_file_rows_from_folder(self,
-                                  foldername: str,
-                                  filename: str,
-                                  rows_range: str):
+    def get_file_rows_from_folder(
+        self, foldername: str, filename: str, rows_range: str
+    ):
         file_path = f"/{foldername}/{filename}"
         google_file = super().googledrive_get_file(file_path)
 
         if google_file is None:
-            raise MissingGoogleDriveFileException('Missing file: {}'.format(filename))
+            raise MissingGoogleDriveFileException("Missing file: {}".format(filename))
 
-        values = super().get_file_values(
-            google_file.id,
-            rows_range)
+        values = super().get_file_values(google_file.id, rows_range)
 
         return values
 
     def empty_document(self, document_id, insert_index, end_index):
         document = super().get_document(document_id)
-        content = document.get('body').get('content')
+        content = document.get("body").get("content")
 
         # Empty file
-        if end_index in range(0, 2) or \
-            insert_index >= end_index:
+        if end_index in range(0, 2) or insert_index >= end_index:
             return
 
         requests = [
             {
-                'deleteContentRange':{
-                    'range': {
-                        'segmentId': '',
-                        'startIndex': insert_index,
-                        'endIndex': end_index
+                "deleteContentRange": {
+                    "range": {
+                        "segmentId": "",
+                        "startIndex": insert_index,
+                        "endIndex": end_index,
                     }
                 }
             }
