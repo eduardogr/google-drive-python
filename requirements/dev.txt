@@ -12,3 +12,5 @@ pytest-cov==4.0.0
 ipython==7.23.1
 
 codecov==2.1.12
+
+twine==4.0.2

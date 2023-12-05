@@ -25,7 +25,7 @@ extra_requirements_dev = read_requirements("requirements/dev.txt")
 
 setup(
     name="google-drive",
-    version="0.5.0",
+    version="0.5.1",
     author="Eduardo Garcia",
     author_email="garciaruiz.edu+maintain+google-drive-python@gmail.com",
     maintainer="Eduardo García",
