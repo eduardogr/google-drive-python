@@ -1,5 +1,10 @@
+google-api-core==1.31.5
 google-api-python-client==2.6.0
+google-auth==1.35.0
 google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.4.1
+googleapis-common-protos==1.56.0
 
 dataclasses==0.6
+
+click==8.1.7
