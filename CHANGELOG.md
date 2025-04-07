@@ -1,10 +1,28 @@
 # CHANGELOG
 
-## 0.4.1
+## PENDING
 
-- Add code and git style guide for contributions.
+- Character of version update: **MINOR**
+- New target version: **0.6.0**
+- Pending changes:
+  - Upgrading `google-api-python-client` to `2.166.0`
+  - Upgrading `google-auth-httplib2`to `0.2.0`
+  - Using `pyproject.toml`instead of `setup.py`
+  - Changing format of importing code
 
-## pending
+## 0.5.1
+
+- Formatting code
+- New style guide
+- Adding missing requirements
+- Adapting release script to upload pip package using a pip token
+
+## 0.5.0 / 0.4.0
+
+Same as v0.4.0
+
+This version was created to be able to upload again the version to Pypi because I had to remove 0.4.0 from pypi.
+Now in pypi there is just 0.5.0, no 0.4.0 in pypi.
 
 ## 0.3.2
 
