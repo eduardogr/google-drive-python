@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "google-drive"
+description = "Library and cli to manage and interact with your Google Drive"
+readme = {file = "README.md", content-type = "text/markdown"}
+version = "0.5.1"
+requires-python = '>=3.9.21'
+dependencies = [
+    "google-api-core==1.31.5",
+    "google-api-python-client==2.166.0",
+    "google-auth==1.35.0",
+    "google-auth-httplib2==0.2.0",
+    "google-auth-oauthlib==0.4.1",
+    "googleapis-common-protos==1.56.0",
+    "dataclasses==0.6",
+    "click==8.1.7"
+]
+authors = [
+    {name = "Eduardo Garcia", email = "garciaruiz.edu+maintain+google-drive-python@gmail.com"},
+]
+maintainers = [
+    {name = "Eduardo Garcia", email = "garciaruiz.edu+maintain+google-drive-python@gmail.com"},
+]
+license = "Apache-2.0"
+license-files = [
+    "LICENSE*",
+    "setuptools/_vendor/LICENSE*",
+]
+keywords = ["google", "drive", "cli"]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Software Development :: Libraries",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pylint==2.16.0b1",
+    "autopep8==2.0.1",
+    "pytest==8.3.5",
+    "pytest-cov==6.1.1",
+    "ipython==7.23.1",
+    "twine==6.1.0"
+]
+
+[project.scripts]
+google-drive = "googledrive.cli:googledrive"
+
+[project.entry-points."console_scripts"]
+google-drive = "googledrive.cli:googledrive"
+
+[project.urls]
+Homepage = "https://github.com/eduardogr/google-drive-python"
+Documentation = "https://github.com/eduardogr/google-drive-python"
+Repository = "https://github.com/eduardogr/google-drive-python.git"
+Issues = "https://github.com/eduardogr/google-drive-python/issues"
+Changelog = "https://github.com/eduardogr/google-drive-python/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["googledrive"]
