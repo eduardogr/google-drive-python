@@ -1,4 +1,4 @@
-from googledrive.models import GoogleApiClientHttpError
+from googledrive import models
 
 
 class CustomException(Exception):
@@ -16,7 +16,7 @@ class CustomException(Exception):
 
 
 class GoogleApiClientHttpErrorException(Exception):
-    def __init__(self, google_api_client_http_error: GoogleApiClientHttpError):
+    def __init__(self, google_api_client_http_error: models.GoogleApiClientHttpError):
         self.google_api_client_http_error = google_api_client_http_error
 
     def get_google_api_client_http_error(self):

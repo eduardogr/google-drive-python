@@ -1,9 +1,7 @@
-import sys
 import click
 
-from googledrive.api import GoogleAuth
-from googledrive.api import GoogleDrive
-from googledrive.exceptions import GoogleApiClientHttpErrorException
+from googledrive import api
+from googledrive import exceptions
 
 
 class Config:
@@ -24,7 +22,7 @@ class Config:
 @click.argument("credentials", envvar="CREDENTIALS", type=click.Path(exists=True))
 def login(credentials):
     """Perform a login with google oauth"""
-    GoogleAuth().authenticate(credentials=credentials, scopes=Config.SCOPES)
+    api.GoogleAuth().authenticate(credentials=credentials, scopes=Config.SCOPES)
 
 
 @click.command()
@@ -33,9 +31,9 @@ def login(credentials):
 def ls(credentials, path):
     """List directory contents"""
     try:
-        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        google_drive = api.GoogleDrive(credentials, Config.SCOPES)
         files = google_drive.googledrive_ls(path)
-    except GoogleApiClientHttpErrorException as e:
+    except exceptions.GoogleApiClientHttpErrorException as e:
         error = e.get_google_api_client_http_error()
         print(f"An http exception occured requesting google's API:\n")
         print(f" - Code: {error.code}")
@@ -55,9 +53,9 @@ def ls(credentials, path):
 def get(id, credentials):
     """Get file metadata"""
     try:
-        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        google_drive = api.GoogleDrive(credentials, Config.SCOPES)
         google_file = google_drive.get_file_from_id(id)
-    except GoogleApiClientHttpErrorException as e:
+    except exceptions.GoogleApiClientHttpErrorException as e:
         error = e.get_google_api_client_http_error()
         print(f"An http exception occured requesting google's API:\n")
         print(f" - Code: {error.code}")
@@ -84,9 +82,9 @@ def get(id, credentials):
 def mkdir(credentials, name):
     """Make directory"""
     try:
-        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        google_drive = api.GoogleDrive(credentials, Config.SCOPES)
         folder = google_drive.create_folder(name)
-    except GoogleApiClientHttpErrorException as e:
+    except exceptions.GoogleApiClientHttpErrorException as e:
         error = e.get_google_api_client_http_error()
         print(f"An http exception occured requesting google's API:\n")
         print(f" - Code: {error.code}")
@@ -104,9 +102,9 @@ def mkdir(credentials, name):
 def get_mimetypes(credentials):
     """Get Mimetypes availables in this API implementation"""
     try:
-        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        google_drive = api.GoogleDrive(credentials, Config.SCOPES)
         mimetypes = google_drive.get_mymetypes()
-    except GoogleApiClientHttpErrorException as e:
+    except exceptions.GoogleApiClientHttpErrorException as e:
         error = e.get_google_api_client_http_error()
         print(f"An http exception occured requesting google's API:\n")
         print(f" - Code: {error.code}")
@@ -127,9 +125,9 @@ def get_mimetypes(credentials):
 def touch(credentials, mymetype, name):
     """Create empty file of specified mimetype"""
     try:
-        google_drive = GoogleDrive(credentials, Config.SCOPES)
+        google_drive = api.GoogleDrive(credentials, Config.SCOPES)
         file = google_drive.create_file(name=name, mimetype=mymetype)
-    except GoogleApiClientHttpErrorException as e:
+    except exceptions.GoogleApiClientHttpErrorException as e:
         error = e.get_google_api_client_http_error()
         print(f"An http exception occured requesting google's API:\n")
         print(f" - Code: {error.code}")
