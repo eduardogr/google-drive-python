@@ -10,13 +10,13 @@ test:
 	pytest $(ARGS)
 
 init-virtual-env:
-	./init-virtual-env.sh
+	./scripts/venv/init.sh
 
 google-auth:
-	python3 google_auth.py
+	python3 ./scripts/google/authenticate.py
 
 clean:
 	rm -rf build .pytest_cache dist google_drive.egg-info
 
 release:
-	./scripts/release.sh
+	./scripts/release/release.sh
