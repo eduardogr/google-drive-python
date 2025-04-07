@@ -1,19 +1,14 @@
 import pickle
 import os.path
-import json
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-from googledrive.models import GoogleApiClientHttpError
-from googledrive.models import GoogleApiClientHttpErrorBuilder
-from googledrive.mappers import GoogleFileDictToGoogleFile
-from googledrive.exceptions import MissingGoogleDriveFolderException
-from googledrive.exceptions import MissingGoogleDriveFileException
-from googledrive.exceptions import GoogleApiClientHttpErrorException
-
+from googledrive import models
+from googledrive import mappers
+from googledrive import exceptions
 
 class GoogleAuth:
     def authenticate(self, credentials, scopes):
@@ -131,10 +126,10 @@ class GoogleDrive(GoogleService):
                 .execute()
             )
         except HttpError as e:
-            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
-            raise GoogleApiClientHttpErrorException(http_error)
+            http_error = models.GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise exceptions.GoogleApiClientHttpErrorException(http_error)
 
-        return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(folder)
+        return mappers.GoogleFileDictToGoogleFile().google_file_dict_to_google_file(folder)
 
     def create_file(self, name, mimetype):
         splitted_path = list(self.__split_path(name))
@@ -145,7 +140,7 @@ class GoogleDrive(GoogleService):
             parent_name = splitted_path[-2]
             parent_folder = self.get_folder(parent_name)
             if parent_folder == None:
-                raise MissingGoogleDriveFolderException(
+                raise exceptions.MissingGoogleDriveFolderException(
                     "Missing folder: {}".format(parent_name)
                 )
             parents = [parent_folder.id]
@@ -161,10 +156,10 @@ class GoogleDrive(GoogleService):
                 .execute()
             )
         except HttpError as e:
-            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
-            raise GoogleApiClientHttpErrorException(http_error)
+            http_error = models.GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise exceptions.GoogleApiClientHttpErrorException(http_error)
 
-        return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(file)
+        return mappers.GoogleFileDictToGoogleFile().google_file_dict_to_google_file(file)
 
     def update_file_parent(self, file_id, current_parent, new_parent):
         drive_service = super().get_service(
@@ -176,8 +171,8 @@ class GoogleDrive(GoogleService):
             )
             file_update.execute()
         except HttpError as e:
-            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
-            raise GoogleApiClientHttpErrorException(http_error)
+            http_error = models.GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise exceptions.GoogleApiClientHttpErrorException(http_error)
 
     def get_file_from_id(self, file_id: str):
         drive_service = super().get_service(
@@ -190,12 +185,12 @@ class GoogleDrive(GoogleService):
                 .execute()
             )
 
-            return GoogleFileDictToGoogleFile().google_file_dict_to_google_file(
+            return mappers.GoogleFileDictToGoogleFile().google_file_dict_to_google_file(
                 google_file_dict
             )
         except HttpError as e:
-            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
-            raise GoogleApiClientHttpErrorException(http_error)
+            http_error = models.GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise exceptions.GoogleApiClientHttpErrorException(http_error)
 
     def list_files(self, page_token: str, query: str):
         drive_service = super().get_service(
@@ -215,11 +210,11 @@ class GoogleDrive(GoogleService):
                 .execute()
             )
         except HttpError as e:
-            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
-            raise GoogleApiClientHttpErrorException(http_error)
+            http_error = models.GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise exceptions.GoogleApiClientHttpErrorException(http_error)
 
         google_files = [
-            GoogleFileDictToGoogleFile().google_file_dict_to_google_file(
+            mappers.GoogleFileDictToGoogleFile().google_file_dict_to_google_file(
                 google_file_dict
             )
             for google_file_dict in response.get("files", [])
@@ -243,8 +238,8 @@ class GoogleDrive(GoogleService):
             )
             return results.get("id")
         except HttpError as e:
-            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
-            raise GoogleApiClientHttpErrorException(http_error)
+            http_error = models.GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise exceptions.GoogleApiClientHttpErrorException(http_error)
 
     def create_permission(self, document_id: str, role: str, email_address):
         drive_service = super().get_service(
@@ -256,8 +251,8 @@ class GoogleDrive(GoogleService):
                 body={"type": "user", "emailAddress": email_address, "role": role},
             ).execute()
         except HttpError as e:
-            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
-            raise GoogleApiClientHttpErrorException(http_error)
+            http_error = models.GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise exceptions.GoogleApiClientHttpErrorException(http_error)
 
     #
     # High level API access
@@ -282,7 +277,7 @@ class GoogleDrive(GoogleService):
         else:
             folder = self.get_folder(splitted_path[0])
             if folder is None:
-                raise MissingGoogleDriveFolderException(
+                raise exceptions.MissingGoogleDriveFolderException(
                     "Missing folder: {}".format(splitted_path[0])
                 )
 
@@ -291,7 +286,7 @@ class GoogleDrive(GoogleService):
                 folder = self.__get_file(query, path_element)
 
                 if folder is None:
-                    raise MissingGoogleDriveFolderException(
+                    raise exceptions.MissingGoogleDriveFolderException(
                         "Missing folder: {}".format(path_element)
                     )
 
@@ -315,7 +310,7 @@ class GoogleDrive(GoogleService):
 
         folder = self.get_folder(splitted_path[0])
         if folder is None:
-            raise MissingGoogleDriveFolderException(
+            raise exceptions.MissingGoogleDriveFolderException(
                 "Missing folder: {}".format(path[0])
             )
 
@@ -327,7 +322,7 @@ class GoogleDrive(GoogleService):
             folder = self.__get_file(query, path_element)
 
             if folder is None:
-                raise MissingGoogleDriveFolderException(
+                raise exceptions.MissingGoogleDriveFolderException(
                     "Missing folder: {}".format(path_element)
                 )
 
@@ -365,8 +360,8 @@ class GoogleDrive(GoogleService):
                     page_token = next_page_token
             return None
         except HttpError as e:
-            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
-            raise GoogleApiClientHttpErrorException(http_error)
+            http_error = models.GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise exceptions.GoogleApiClientHttpErrorException(http_error)
 
 
 class SheetsService(GoogleService):
@@ -396,7 +391,7 @@ class SheetsService(GoogleService):
     #
     def get_file_values(self, spreadsheet_id, rows_range):
         if spreadsheet_id is None:
-            raise MissingGoogleDriveFileException(
+            raise exceptions.MissingGoogleDriveFileException(
                 "Missing file: {}".format(spreadsheet_id)
             )
 
@@ -422,8 +417,8 @@ class SheetsService(GoogleService):
                 self.cached_file_values.update({spreadsheet_id: {rows_range: values}})
             return values
         except HttpError as e:
-            http_error = GoogleApiClientHttpErrorBuilder().from_http_error(e)
-            raise GoogleApiClientHttpErrorException(http_error)
+            http_error = models.GoogleApiClientHttpErrorBuilder().from_http_error(e)
+            raise exceptions.GoogleApiClientHttpErrorException(http_error)
 
     def update_file_values(
         self, spreadsheet_id, rows_range, value_input_option, values
@@ -506,7 +501,7 @@ class FilesAPI(GoogleDrive, SheetsService, DocsService):
         google_file = super().googledrive_get_file(file_path)
 
         if google_file is None:
-            raise MissingGoogleDriveFileException("Missing file: {}".format(filename))
+            raise exceptions.MissingGoogleDriveFileException("Missing file: {}".format(filename))
 
         values = super().get_file_values(google_file.id, rows_range)
 

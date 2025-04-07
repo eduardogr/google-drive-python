@@ -1,11 +1,8 @@
 from unittest import TestCase
 
-from googledrive.api import FilesAPI, GoogleDrive
-from googledrive.api import SheetsService, DocsService
-from googledrive.models import GoogleFile
-from googledrive.exceptions import MissingGoogleDriveFolderException
-from googledrive.exceptions import MissingGoogleDriveFileException
-from googledrive.exceptions import GoogleApiClientHttpErrorException
+from googledrive import api
+from googledrive import models
+from googledrive import exceptions
 
 from tests.common.mocks import RawSheetsServiceMock
 from tests.common.mocks import RawDocsServiceMock
@@ -17,28 +14,28 @@ from tests.common.mocks import MockGoogleDrive, MockSheetsService
 from tests.common.mocks import MockDocsService
 
 
-class DocServiceSut(DocsService, MockGoogleService):
+class DocServiceSut(api.DocsService, MockGoogleService):
     "Inject a mock into the DocsService dependency"
 
     def __init__(self):
         super().__init__("", [])
 
 
-class SheetsServiceSut(SheetsService, MockGoogleService):
+class SheetsServiceSut(api.SheetsService, MockGoogleService):
     "Inject a mock into the SheetsService dependency"
 
     def __init__(self):
         super().__init__("", [])
 
 
-class GoogleDriveSut(GoogleDrive, MockGoogleService):
+class GoogleDriveSut(api.GoogleDrive, MockGoogleService):
     "Inject a mock into the GoogleDrive dependency"
 
     def __init__(self):
         super().__init__("", [])
 
 
-class FilesAPISut(FilesAPI, MockGoogleDrive, MockSheetsService, MockDocsService):
+class FilesAPISut(api.FilesAPI, MockGoogleDrive, MockSheetsService, MockDocsService):
     "Inject mocks into FilesAPI dependencies"
 
 
@@ -51,8 +48,8 @@ class TestGoogleDrive(TestCase):
         drive_service = RawGoogleServiceMock(raw_google_service_files)
 
         self.sut.set_service(
-            GoogleDrive.DRIVE_SERVICE_ID,
-            GoogleDrive.DRIVE_SERVICE_VERSION,
+            api.GoogleDrive.DRIVE_SERVICE_ID,
+            api.GoogleDrive.DRIVE_SERVICE_VERSION,
             drive_service,
         )
 
@@ -63,7 +60,7 @@ class TestGoogleDrive(TestCase):
 
     def test_create_file_when_no_parent_ok(self):
         path = "filename"
-        mimetype = GoogleDrive.MIMETYPE_DOCUMENT
+        mimetype = api.GoogleDrive.MIMETYPE_DOCUMENT
 
         self.sut.create_file(path, mimetype)
 
@@ -71,14 +68,14 @@ class TestGoogleDrive(TestCase):
         # given:
         parent_folder = "parentfolder"
         path = f"{parent_folder}/filename"
-        mimetype = GoogleDrive.MIMETYPE_DOCUMENT
+        mimetype = api.GoogleDrive.MIMETYPE_DOCUMENT
         files = [{"name": parent_folder, "id": parent_folder, "parents": []}]
-        files_by_query = {GoogleDrive.QUERY_IS_FOLDER: RawGoogleListMock(files)}
+        files_by_query = {api.GoogleDrive.QUERY_IS_FOLDER: RawGoogleListMock(files)}
         raw_google_service_files = RawGoogleServiceFilesMock(files_by_query)
         drive_service = RawGoogleServiceMock(raw_google_service_files)
         self.sut.set_service(
-            GoogleDrive.DRIVE_SERVICE_ID,
-            GoogleDrive.DRIVE_SERVICE_VERSION,
+            api.GoogleDrive.DRIVE_SERVICE_ID,
+            api.GoogleDrive.DRIVE_SERVICE_VERSION,
             drive_service,
         )
 
@@ -87,7 +84,7 @@ class TestGoogleDrive(TestCase):
 
     def test_googledrive_ls_when_folder_no_exists(self):
         # when:
-        with self.assertRaises(MissingGoogleDriveFolderException):
+        with self.assertRaises(exceptions.MissingGoogleDriveFolderException):
             self.sut.googledrive_ls("/unexistent")
 
     def test_googledrive_ls_when_for(self):
@@ -99,7 +96,7 @@ class TestGoogleDrive(TestCase):
         ]
         files_by_query = {
             "mimeType='application/vnd.google-apps.folder'": RawGoogleListMock(files),
-            f"{GoogleDrive.QUERY_IS_FILE} and 'basefolder' in parents": RawGoogleListMock(
+            f"{api.GoogleDrive.QUERY_IS_FILE} and 'basefolder' in parents": RawGoogleListMock(
                 listed_files
             ),
         }
@@ -107,8 +104,8 @@ class TestGoogleDrive(TestCase):
         drive_service = RawGoogleServiceMock(raw_google_service_files)
 
         self.sut.set_service(
-            GoogleDrive.DRIVE_SERVICE_ID,
-            GoogleDrive.DRIVE_SERVICE_VERSION,
+            api.GoogleDrive.DRIVE_SERVICE_ID,
+            api.GoogleDrive.DRIVE_SERVICE_VERSION,
             drive_service,
         )
 
@@ -130,13 +127,13 @@ class TestGoogleDrive(TestCase):
         drive_service = RawGoogleServiceMock(raw_google_service_files)
 
         self.sut.set_service(
-            GoogleDrive.DRIVE_SERVICE_ID,
-            GoogleDrive.DRIVE_SERVICE_VERSION,
+            api.GoogleDrive.DRIVE_SERVICE_ID,
+            api.GoogleDrive.DRIVE_SERVICE_VERSION,
             drive_service,
         )
 
         # when:
-        with self.assertRaises(MissingGoogleDriveFolderException):
+        with self.assertRaises(exceptions.MissingGoogleDriveFolderException):
             self.sut.googledrive_ls("/something/unexistent")
 
     def test_googledrive_ls_when_no_for(self):
@@ -145,13 +142,13 @@ class TestGoogleDrive(TestCase):
             {"name": "file_1", "id": "file_1", "parents": []},
             {"name": "file_2", "id": "file_2", "parents": []},
         ]
-        files_by_query = {GoogleDrive.QUERY_IS_FILE: RawGoogleListMock(listed_files)}
+        files_by_query = {api.GoogleDrive.QUERY_IS_FILE: RawGoogleListMock(listed_files)}
         raw_google_service_files = RawGoogleServiceFilesMock(files_by_query)
         drive_service = RawGoogleServiceMock(raw_google_service_files)
 
         self.sut.set_service(
-            GoogleDrive.DRIVE_SERVICE_ID,
-            GoogleDrive.DRIVE_SERVICE_VERSION,
+            api.GoogleDrive.DRIVE_SERVICE_ID,
+            api.GoogleDrive.DRIVE_SERVICE_VERSION,
             drive_service,
         )
 
@@ -170,7 +167,7 @@ class TestGoogleDrive(TestCase):
 
     def test_googledrive_get_file_when_unexistent_file(self):
         # when:
-        with self.assertRaises(MissingGoogleDriveFolderException):
+        with self.assertRaises(exceptions.MissingGoogleDriveFolderException):
             self.sut.googledrive_get_file("/unexistent/path/file")
 
     def test_googledrive_get_file_for(self):
@@ -184,11 +181,11 @@ class TestGoogleDrive(TestCase):
             {"name": "existent_file", "id": "existent_file", "parents": ["path"]},
         ]
         files_by_query = {
-            GoogleDrive.QUERY_IS_FOLDER: RawGoogleListMock(files),
-            f"{GoogleDrive.QUERY_IS_FOLDER} and 'base' in parents": RawGoogleListMock(
+            api.GoogleDrive.QUERY_IS_FOLDER: RawGoogleListMock(files),
+            f"{api.GoogleDrive.QUERY_IS_FOLDER} and 'base' in parents": RawGoogleListMock(
                 files
             ),
-            f"{GoogleDrive.QUERY_IS_FILE} and 'path' in parents": RawGoogleListMock(
+            f"{api.GoogleDrive.QUERY_IS_FILE} and 'path' in parents": RawGoogleListMock(
                 listed_files
             ),
         }
@@ -196,8 +193,8 @@ class TestGoogleDrive(TestCase):
         drive_service = RawGoogleServiceMock(raw_google_service_files)
 
         self.sut.set_service(
-            GoogleDrive.DRIVE_SERVICE_ID,
-            GoogleDrive.DRIVE_SERVICE_VERSION,
+            api.GoogleDrive.DRIVE_SERVICE_ID,
+            api.GoogleDrive.DRIVE_SERVICE_VERSION,
             drive_service,
         )
 
@@ -210,20 +207,20 @@ class TestGoogleDrive(TestCase):
         # given:
         files = [{"name": "base", "id": "base", "parents": []}]
         files_by_query = {
-            GoogleDrive.QUERY_IS_FOLDER: RawGoogleListMock(files),
-            f"{GoogleDrive.QUERY_IS_FOLDER} and 'base' in parents": RawGoogleListMock(),
+            api.GoogleDrive.QUERY_IS_FOLDER: RawGoogleListMock(files),
+            f"{api.GoogleDrive.QUERY_IS_FOLDER} and 'base' in parents": RawGoogleListMock(),
         }
         raw_google_service_files = RawGoogleServiceFilesMock(files_by_query)
         drive_service = RawGoogleServiceMock(raw_google_service_files)
 
         self.sut.set_service(
-            GoogleDrive.DRIVE_SERVICE_ID,
-            GoogleDrive.DRIVE_SERVICE_VERSION,
+            api.GoogleDrive.DRIVE_SERVICE_ID,
+            api.GoogleDrive.DRIVE_SERVICE_VERSION,
             drive_service,
         )
 
         # when:
-        with self.assertRaises(MissingGoogleDriveFolderException):
+        with self.assertRaises(exceptions.MissingGoogleDriveFolderException):
             self.sut.googledrive_get_file("/base/unexistent/unexistent_file")
 
     def test_googledrive_get_file_no_for(self):
@@ -234,8 +231,8 @@ class TestGoogleDrive(TestCase):
             {"name": "existent_file", "id": "existent_file", "parents": ["path"]},
         ]
         files_by_query = {
-            GoogleDrive.QUERY_IS_FOLDER: RawGoogleListMock(files),
-            f"{GoogleDrive.QUERY_IS_FILE} and 'base' in parents": RawGoogleListMock(
+            api.GoogleDrive.QUERY_IS_FOLDER: RawGoogleListMock(files),
+            f"{api.GoogleDrive.QUERY_IS_FILE} and 'base' in parents": RawGoogleListMock(
                 listed_files
             ),
         }
@@ -243,8 +240,8 @@ class TestGoogleDrive(TestCase):
         drive_service = RawGoogleServiceMock(raw_google_service_files)
 
         self.sut.set_service(
-            GoogleDrive.DRIVE_SERVICE_ID,
-            GoogleDrive.DRIVE_SERVICE_VERSION,
+            api.GoogleDrive.DRIVE_SERVICE_ID,
+            api.GoogleDrive.DRIVE_SERVICE_VERSION,
             drive_service,
         )
 
@@ -284,8 +281,8 @@ class TestSheetsService(TestCase):
     def setUp(self):
         self.sut = SheetsServiceSut()
         self.sut.set_service(
-            SheetsService.SHEETS_SERVICE_ID,
-            SheetsService.SHEETS_SERVICE_VERSION,
+            api.SheetsService.SHEETS_SERVICE_ID,
+            api.SheetsService.SHEETS_SERVICE_VERSION,
             RawSheetsServiceMock(),
         )
 
@@ -319,8 +316,8 @@ class TestDocsService(TestCase):
     def setUp(self):
         self.sut = DocServiceSut()
         self.sut.set_service(
-            DocsService.DOCS_SERVICE_ID,
-            DocsService.DOCS_SERVICE_VERSION,
+            api.DocsService.DOCS_SERVICE_ID,
+            api.DocsService.DOCS_SERVICE_VERSION,
             RawDocsServiceMock(),
         )
 
@@ -365,7 +362,7 @@ class TestFilesAPI(TestCase):
         # given:
         folder_parent = "parent"
         filename = "filename"
-        folder = GoogleFile(
+        folder = models.GoogleFile(
             id="new_parent_id", name="folder", parents=[], mime_type="", export_links={}
         )
 
@@ -411,7 +408,7 @@ class TestFilesAPI(TestCase):
         self.sut.set_pages_requested(1)
         self.sut.set_response_files(
             [
-                GoogleFile(
+                models.GoogleFile(
                     id="some id",
                     name=folder_name,
                     parents=[],
@@ -443,7 +440,7 @@ class TestFilesAPI(TestCase):
         self.assertEqual(1, len(calls))
         self.assertIn("list_files", calls)
 
-        self.assertEqual(GoogleDrive.QUERY_IS_FOLDER, calls["list_files"][0]["query"])
+        self.assertEqual(api.GoogleDrive.QUERY_IS_FOLDER, calls["list_files"][0]["query"])
 
     def test_get_file_rows_from_folder(self):
         # given:
@@ -452,7 +449,7 @@ class TestFilesAPI(TestCase):
         file_id = "file_id"
         self.sut.set_googledrive_get_file_response(
             f"/{foldername}/{filename}",
-            GoogleFile(
+            models.GoogleFile(
                 id=file_id, name=filename, parents=[], mime_type="", export_links={}
             ),
         )
@@ -481,7 +478,7 @@ class TestFilesAPI(TestCase):
         self.sut.set_googledrive_get_file_raise_exception(f"/{foldername}/{filename}")
 
         # when:
-        with self.assertRaises(MissingGoogleDriveFolderException):
+        with self.assertRaises(exceptions.MissingGoogleDriveFolderException):
             self.sut.get_file_rows_from_folder(foldername, filename, rows_range)
 
         # then:
@@ -498,7 +495,7 @@ class TestFilesAPI(TestCase):
         rows_range = "A2::F4"
 
         # when:
-        with self.assertRaises(MissingGoogleDriveFileException):
+        with self.assertRaises(exceptions.MissingGoogleDriveFileException):
             self.sut.get_file_rows_from_folder(foldername, filename, rows_range)
 
         # then:
@@ -528,7 +525,7 @@ class TestFilesAPI(TestCase):
         self.sut.raise_exception_for_get_file_values_for_ids([file_id])
 
         # when:
-        with self.assertRaises(GoogleApiClientHttpErrorException):
+        with self.assertRaises(exceptions.GoogleApiClientHttpErrorException):
             self.sut.get_file_values(file_id, rows_range)
 
         # then:

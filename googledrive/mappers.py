@@ -1,4 +1,4 @@
-from googledrive.models import GoogleFile
+from googledrive import models
 
 
 class GoogleFileDictToGoogleFile:
@@ -12,7 +12,7 @@ class GoogleFileDictToGoogleFile:
         mime_type = google_file_dict.get("mimeType") or ""
         export_links = google_file_dict.get("exportLinks") or {}
 
-        return GoogleFile(
+        return models.GoogleFile(
             name=name,
             id=id,
             parents=parents,
