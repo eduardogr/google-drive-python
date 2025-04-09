@@ -1,16 +1,13 @@
 SHELL:=/bin/bash
 
 install:
-	pip3 install .
+	poetry install
 
 install-dev:
 	pip3 install -e '.[dev]'
 
 test:
-	pytest $(ARGS)
-
-init-virtual-env:
-	./scripts/venv/init.sh
+	poetry run pytest $(ARGS)
 
 google-auth:
 	python3 ./scripts/google/authenticate.py
