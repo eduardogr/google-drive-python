@@ -66,6 +66,12 @@ To generate this we have the make target google-auth, so, you just have to tun
 
 # Installing google-drive CLI
 
+## Using pipx
+
+```
+pipx install git+https://github.com/eduardogr/google-drive-python.git
+```
+
 ## Using pip
 
 ```
