@@ -1,22 +1,28 @@
 SHELL:=/bin/bash
 
+check:
+	poetry check
+
 install:
-	pip3 install .
+	poetry install
 
 install-dev:
-	pip3 install -e '.[dev]'
+	poetry install --with dev
 
 test:
-	pytest $(ARGS)
+	poetry run pytest $(ARGS)
 
-init-virtual-env:
-	./scripts/venv/init.sh
+build:
+	poetry build
 
-google-auth:
-	python3 ./scripts/google/authenticate.py
+publish-locally:
+	eval $(shell poetry env activate) && python3 -m pip install dist/googledrive-*.tar.gz
 
-clean:
-	rm -rf build .pytest_cache dist google_drive.egg-info
+publish:
+	poetry publish --dry-run
 
 release:
 	./scripts/release/release.sh
+
+clean:
+	rm -rf build .pytest_cache dist google_drive.egg-info

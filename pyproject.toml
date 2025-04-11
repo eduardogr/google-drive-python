@@ -1,13 +1,19 @@
-[build-system]
-requires = ["setuptools >= 77.0.3"]
-build-backend = "setuptools.build_meta"
-
 [project]
-name = "google-drive"
-description = "Library and cli to manage and interact with your Google Drive"
-readme = {file = "README.md", content-type = "text/markdown"}
+name = "googledrive"
 version = "0.5.1"
-requires-python = '>=3.9.21'
+description = "Library and cli to manage and interact with your Google Drive"
+authors = [
+    {name = "Eduardo Garcia Ruiz",email = "garciaruiz.edu+maintain+google-drive-python@gmail.com"}
+]
+maintainers = [
+    {name = "Eduardo Garcia Ruiz",email = "garciaruiz.edu+maintain+google-drive-python@gmail.com"}
+]
+license = {text = "Apache-2.0"}
+license-files = [
+    "LICENSE*",
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.9.21"
 dependencies = [
     "google-api-core==1.31.5",
     "google-api-python-client==2.166.0",
@@ -18,17 +24,6 @@ dependencies = [
     "dataclasses==0.6",
     "click==8.1.7"
 ]
-authors = [
-    {name = "Eduardo Garcia", email = "garciaruiz.edu+maintain+google-drive-python@gmail.com"},
-]
-maintainers = [
-    {name = "Eduardo Garcia", email = "garciaruiz.edu+maintain+google-drive-python@gmail.com"},
-]
-license = "Apache-2.0"
-license-files = [
-    "LICENSE*",
-    "setuptools/_vendor/LICENSE*",
-]
 keywords = ["google", "drive", "cli"]
 
 classifiers = [
@@ -36,21 +31,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pylint==2.16.0b1",
-    "autopep8==2.0.1",
-    "pytest==8.3.5",
-    "pytest-cov==6.1.1",
-    "ipython==7.23.1",
-    "twine==6.1.0"
-]
-
 [project.scripts]
 google-drive = "googledrive.cli:googledrive"
 
-[project.entry-points."console_scripts"]
-google-drive = "googledrive.cli:googledrive"
 
 [project.urls]
 Homepage = "https://github.com/eduardogr/google-drive-python"
@@ -61,3 +44,18 @@ Changelog = "https://github.com/eduardogr/google-drive-python/blob/main/CHANGELO
 
 [tool.setuptools.packages.find]
 where = ["googledrive"]
+
+[tool.poetry]
+
+[tool.poetry.group.dev.dependencies]
+pylint = "2.16.0b1"
+autopep8 = "2.0.1"
+pytest = "8.3.5"
+pytest-cov = "6.1.1"
+ipython = "7.23.1"
+twine = "6.1.0"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
