@@ -24,5 +24,10 @@ publish:
 release:
 	./scripts/release/release.sh
 
+google-auth:
+	eval $(shell poetry env activate) && \
+	python3 -m pip install dist/googledrive-*.tar.gz && \
+	google-drive login
+
 clean:
 	rm -rf build .pytest_cache dist google_drive.egg-info

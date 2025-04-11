@@ -66,12 +66,6 @@ To generate this we have the make target google-auth, so, you just have to tun
 
 # Installing google-drive CLI
 
-## Using make
-
-```
-make install
-```
-
 ## Using pip
 
 ```
