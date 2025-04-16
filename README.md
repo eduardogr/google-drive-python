@@ -11,7 +11,7 @@ Library and cli to manage and interact with your Google Drive, sheets and docs
 1. [Obtaining credentials for Google APIs](#obtaining-credentials-for-google-apis)
 1. [Installing google-drive CLI](#installing-google-drive-cli)
 1. [CLI documentation](#cli-documentation)
-1. [Library documentation] (#library-documentation)
+1. [Library documentation](#library-documentation)
 1. [Contributing](#contributing)
 1. [License](#license)
 
