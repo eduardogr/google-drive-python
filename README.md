@@ -10,7 +10,8 @@ Library and cli to manage and interact with your Google Drive, sheets and docs
 1. [Introduction](#introduction)
 1. [Obtaining credentials for Google APIs](#obtaining-credentials-for-google-apis)
 1. [Installing google-drive CLI](#installing-google-drive-cli)
-1. [CLI Documentation](#cli-documentation)
+1. [CLI documentation](#cli-documentation)
+1. [Library documentation] (#library-documentation)
 1. [Contributing](#contributing)
 1. [License](#license)
 
@@ -92,7 +93,7 @@ And select one and run:
 pip install google-drive==<VERSION>
 ```
 
-# CLI Documentation
+# CLI documentation
 
 ## google-drive --help
 
@@ -204,9 +205,13 @@ Create empty file of specified mimetype
 
 It could raise `MissingGoogleDriveFolderException` when parent directories do not exist.
 
-# Using googledrive as API SDK
+# Library documentation
 
-## Contributing
+Using `googledrive` as a library.
+
+> TBC
+
+# Contributing
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -215,6 +220,6 @@ details.
 
 You can visit our [TODO](TODO.md) list :)
 
-## License
+# License
 
 This project is licensed under the [Apache license](https://github.com/eduardogr/google-drive-python/blob/main/LICENSE).
